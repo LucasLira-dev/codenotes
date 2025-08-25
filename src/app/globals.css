@@ -1,0 +1,32 @@
+
+@import "tailwindcss";
+
+:root { 
+  --header: #0f172a;   /* azul escuro profundo) */    /*cinza muito claro */
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card: #1e293b;
+  --primary: #f59e0b;
+  --secondary: #fb923c;
+  --accent: #fb923c;
+  --destructive: #ef4444;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+  --border: #334155;
+  --input: #1e293b;
+
+  --chart1-primary: #d97706;
+  --chart1-secondary: #f59e0b;
+
+  --chart2-primary: #f97316;
+  --chart2-secondary: #fb923c;
+
+  --chart3-primary: #dc2626;
+  --chart3-secondary: #ef4444;
+
+  --chart4-primary: #4b5563;
+  --chart4-secondary: #64748b;
+
+  --chart5-primary: #374151;
+  --chart5-secondary: #475569;
+}
