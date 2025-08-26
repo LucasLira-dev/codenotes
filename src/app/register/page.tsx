@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation'
 export default function RegisterPage() {
 
   const router = useRouter()
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   return (
   <div className="min-h-screen bg-gradient-to-br from-[var(--background)] via-[var(--card)] to-[var(--background)] flex items-center justify-center p-4">
@@ -47,8 +48,14 @@ export default function RegisterPage() {
                     e.preventDefault();
                     const form = e.currentTarget;
                     const formData = new FormData(form);
+                    const email = String(formData.get('email') ?? '');
+
+                    if(!emailRegex.test(email)){
+                      alert("Digite um email válido.");
+                      return;
+                    }
                     const result = await CadastrarUsuario({
-                    userEmail: String(formData.get('email') ?? ''),
+                    userEmail: email,
                     userPassword: String(formData.get('password') ?? ''),
                 })
                 if (result) {

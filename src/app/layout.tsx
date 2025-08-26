@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Manrope } from "next/font/google";
 import "./globals.css";
 
+import { SessionWrapper } from './sessionWrapper'
+
 const geist = Geist({
   subsets: ["latin"],
   display: "swap",
@@ -30,7 +32,9 @@ export default function RootLayout({
       <body
         className={`${geist.variable} ${manrope.variable} antialiased`}
       >
-        {children}
+        <SessionWrapper>
+          {children}
+        </SessionWrapper>
       </body>
     </html>
   );

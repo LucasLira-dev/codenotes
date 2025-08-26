@@ -1,6 +1,13 @@
+'use client'
+
 import { FaCode } from "react-icons/fa";
+import { useSession } from 'next-auth/react'
+import Link from "next/link";
 
 export const Header = () => {
+
+  const { data } = useSession();
+
   return (
     <header
     className="bg-[var(--header)] flex justify-between items-center p-4 border-b-1 border-b-[var(--border)]">
@@ -20,10 +27,11 @@ export const Header = () => {
         className="text-[var(--foreground)] hover:bg-[var(--chart1-primary)] hover:text-black py-1 px-3 rounded cursor-pointer">
             Buscar
         </button>
-        <button
-        className="bg-[var(--primary)] text-black hover:brightness-90 py-1 px-3 rounded cursor-pointer">
+        <Link
+        className="bg-[var(--primary)] text-black hover:brightness-90 py-1 px-3 rounded cursor-pointer"
+        href={data ? '/editor': '/login'}>
             Começar
-        </button>
+        </Link>
       </div>
     </header>
   );
