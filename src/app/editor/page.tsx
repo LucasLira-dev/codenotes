@@ -26,7 +26,7 @@ export default function EditorPage() {
   }
 
   if (status === "unauthenticated" || !session?.accessToken) {
-    return <Loading /> // ou null, pois está redirecionando
+    router.push("/login")
   }
 
 
