@@ -1,27 +1,49 @@
-import { EditorHeader } from '@/components/EditorHeader/editorHeader'
+'use client'
+
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import {EditorHeader } from '@/components/EditorHeader/editorHeader'
 import { CodeEditor } from '@/components/CodeEditor/codeEditor'
+import Loading from '@/components/Loading/loading'
+import { TitleInput } from '@/components/TitleInput/titleInput'
+import { EditorProvider} from '@/contexts/EditorContext'
 
 export default function EditorPage() {
+
+
+  const { data: session, status } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login")
+    }
+  }, [status, router, session?.accessToken])
+
+  if (status === "loading") {
+    return <Loading />
+  }
+
+  if (status === "unauthenticated" || !session?.accessToken) {
+    return <Loading /> // ou null, pois está redirecionando
+  }
+
+
   return (
-    <>
+    <EditorProvider>
       <EditorHeader />
       <main
       className='bg-[var(--background)] flex flex-col justify-center items-center'>
         <section
         className="container mx-auto flex flex-col md:max-w-[1000px] px-4 py-16 gap-4">
           <article>
-            <h3
-            className="text-[var(--foreground)] mb-1 font-semibold">
-              Descrição
-            </h3>
-            <textarea
-              className="border-1 border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] py-1 px-2 rounded w-full h-30"
-              placeholder="Descreva sua nota aqui..."
-            />
+            <TitleInput />
           </article>
-          <CodeEditor />
+          <CodeEditor
+           />
         </section>
       </main>
-    </>
+    </EditorProvider>
   )
 }

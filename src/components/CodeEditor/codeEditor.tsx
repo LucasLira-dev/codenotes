@@ -4,7 +4,6 @@ import { FaRegFileCode, FaRegCheckCircle } from "react-icons/fa";
 import { MdContentCopy } from "react-icons/md";
 import { LuTerminal } from "react-icons/lu";
 import { VscDebugStart } from "react-icons/vsc";
-
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
 import { python } from '@codemirror/lang-python'
@@ -29,15 +28,18 @@ import {
 } from "@/components/ui/tabs"
 import { useEffect, useRef, useState } from "react";
 
+import { useEditor } from '@/contexts/EditorContext'
+
 export const CodeEditor = () => {
 
-    const [code, setCode ] = useState("console.log(\"Hello, world!\");")
+    const { code, setCode } = useEditor();
+
     const [copied, setCopied] = useState(false)
     const [output, setOutput ] = useState<string[]>([])
     const workerRef = useRef<Worker | null>(null);
 
     const [activeTab, setActiveTab ] = useState("editor")
-    const [language, setLanguage ] = useState("javascript")
+    const { language, setLanguage} = useEditor();
 
     const languages = {
         javascript: javascript( { jsx: true }),

@@ -6,7 +6,20 @@ import Link from "next/link";
 
 export const Header = () => {
 
-  const { data } = useSession();
+  const { data, status } = useSession();
+
+    // Debug - vamos ver o que tem na sessão
+  console.log("Session data:", data);
+  console.log("Session status:", status);
+  console.log("AccessToken:", data?.accessToken);
+
+  // Função para determinar o destino do botão
+  const getDestination = () => {
+    if (status === "loading") return "/login"; // Enquanto carrega
+    if (status === "unauthenticated") return "/login"; // Não logado
+    if (data?.accessToken) return "/editor"; // Logado com token válido
+    return "/login"; // Logado mas sem token (expirado)
+  };
 
   return (
     <header
@@ -29,7 +42,7 @@ export const Header = () => {
         </button>
         <Link
         className="bg-[var(--primary)] text-black hover:brightness-90 py-1 px-3 rounded cursor-pointer"
-        href={data ? '/editor': '/login'}>
+        href={getDestination()}>
             Começar
         </Link>
       </div>

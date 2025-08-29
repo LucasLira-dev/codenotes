@@ -4,7 +4,13 @@ import { FaCode } from "react-icons/fa"
 import { LuNotebookText } from "react-icons/lu";
 import { FaRegSave } from "react-icons/fa";
 
+
+import { useEditor } from '@/contexts/EditorContext'
+
 export const EditorHeader = () => {
+
+    const {saveNote, saving} = useEditor();
+
     return (
         <header
         className="flex bg-[var(--header)] justify-between items-center p-4 border-b-1 border-b-[var(--border)]"
@@ -41,9 +47,9 @@ export const EditorHeader = () => {
                 </Link>
                 <button
                 className="bg-[var(--primary)] text-black hover:brightness-90 py-1 px-3 rounded cursor-pointer flex items-center gap-1"
-                >
+                onClick={saveNote}>
                     <FaRegSave className="h-4 w-4" />
-                    Salvar
+                    {saving ? "Salvando..." : "Salvar"}
                 </button>
             </div>
         </header>
