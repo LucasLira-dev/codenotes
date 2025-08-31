@@ -34,6 +34,7 @@ export const authOptions: NextAuthOptions = {
           email: credentials.email,
           token: data.token,
           expiresAt: Date.now() + data.expiresIn * 1000, // calcula timestamp de expiração
+          refreshToken: data.refreshToken,
         };
       },
     }),
@@ -52,9 +53,32 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (token.expiresAt && Date.now() > token.expiresAt) {
-        // expirou → remove accessToken
-        delete token.accessToken;
-        return token;
+        // token expirado, tentar refresh
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              // enviar refreshToken se tiver
+              refreshToken: token.refreshToken,
+            }),
+          });
+
+          if (!res.ok) throw new Error("Failed to refresh token");
+          const data = await res.json();
+
+          if (data?.token && data?.expiresIn) {
+            token.accessToken = data.token;
+            token.expiresAt = Date.now() + data.expiresIn * 1000;
+            token.refreshToken = data.refreshToken || token.refreshToken; // atualizar se veio novo
+          } else {
+            throw new Error("Invalid refresh response");
+          }
+        } catch (error) {
+          console.error("Erro ao renovar token:", error);
+          // falha no refresh, limpar dados de autenticação
+          return {};
+        }
       }
 
       return token;

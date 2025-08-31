@@ -8,11 +8,6 @@ export const Header = () => {
 
   const { data, status } = useSession();
 
-    // Debug - vamos ver o que tem na sessão
-  console.log("Session data:", data);
-  console.log("Session status:", status);
-  console.log("AccessToken:", data?.accessToken);
-
   // Função para determinar o destino do botão
   const getDestination = () => {
     if (status === "loading") return "/login"; // Enquanto carrega
