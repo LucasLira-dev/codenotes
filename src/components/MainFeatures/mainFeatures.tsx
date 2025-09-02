@@ -44,7 +44,7 @@ export const MainFeatures = () =>{
         <section
         className="flex flex-col items-center justify-center mt-15">
             <h2
-            className="font-bold text-2xl text-[var(--foreground)]">
+            className="font-bold text-2xl text-[var(--foreground)] mb-4">
                 Funcionalidades Principais
             </h2>
             <p

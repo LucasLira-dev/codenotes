@@ -1,5 +1,7 @@
 'use client'
 
+// import { EmptyNotes } from "@/components/EmptyNotes/emptyNotes";
+import  NoteInformations from "@/components/NoteInformations/noteInformations"
 import { NotesMenu } from "@/components/NotesMenu/notesMenu";
 import { useEffect, useState } from "react";
 import { FaBars, FaPlus } from "react-icons/fa";
@@ -62,16 +64,20 @@ export default function Notes(){
             </div>
           </div>
           <button
-          className="bg-[var(--primary)] text-black hover:brightness-90 py-1 px-3 rounded cursor-pointer flex items-center gap-3">
+          className="bg-[var(--primary)] text-[var(--chart5-primary)] hover:brightness-90 py-1 px-3 rounded cursor-pointer flex items-center gap-3">
             <FaPlus size={14} />
             <span
               className="font-semibold text-[var(--chart5-primary)]"
             >
-              Nova Nota
+              <span className="md:hidden"> Nova </span> 
+              <span className="hidden md:block"> Nova Nota </span>
             </span>
           </button>
         </header>
-        <main className="bg-[var(--background)] flex flex-col justify-center items-center"></main>
+        <main className="bg-[var(--background)] min-h-screen">
+          {/* <EmptyNotes /> */}
+          <NoteInformations />
+        </main>
       </div>
       </>
     );

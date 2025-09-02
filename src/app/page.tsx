@@ -33,7 +33,7 @@ export default function Home() {
               <Link
                 className="bg-[var(--secondary)] text-[#0F172A] rounded-md px-4 py-1 hover:brightness-90 "
                 href={data ? "/editor" : "/login"}>
-                Começar a Usar
+                Começar a usar
               </Link>
           </div>
         </article>
