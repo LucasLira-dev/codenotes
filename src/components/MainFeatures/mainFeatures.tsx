@@ -35,7 +35,7 @@ const cardInformations = [
     {
         icone: <LuZap className="h-10 w-10 text-[var(--primary)] mb-2"/>,
         title: 'Interface Moderna',
-        description: 'Design inspirado no Notion e Obsidian com modo claro e escuro'
+        description: 'Design inspirado no Notion e Obsidian com modo escuro'
     },
 ]
 

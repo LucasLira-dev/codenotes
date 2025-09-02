@@ -3,10 +3,10 @@
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import {EditorHeader } from '@/components/EditorHeader/editorHeader'
-import { CodeEditor } from '@/components/CodeEditor/codeEditor'
+import {EditorHeader } from '@/components/EditorComponents/EditorHeader/editorHeader'
+import { CodeEditor } from '@/components/EditorComponents/CodeEditor/codeEditor'
 import Loading from '@/components/Loading/loading'
-import { TitleInput } from '@/components/TitleInput/titleInput'
+import { TitleInput } from '@/components/EditorComponents/TitleInput/titleInput'
 import { EditorProvider} from '@/contexts/EditorContext'
 
 export default function EditorPage() {

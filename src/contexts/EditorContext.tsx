@@ -25,7 +25,7 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
     const [language, setLanguage] = useState("javascript");
     const [saving, setSaving] = useState(false);
 
-    const { data: session } = useSession()
+    const { data: session } = useSession();
 
     const saveNote = async () => {
         if (!session?.accessToken) {

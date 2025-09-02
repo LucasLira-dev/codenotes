@@ -10,7 +10,7 @@ export const Footer = () => {
               <span className="font-semibold">CodeNotes</span>
             </div>
             <p className="text-sm text-[var(--muted-foreground)]">
-              © 2025 CodeNotes. Feito para programadores, por programadores.
+              © 2025 CodeNotes. Feito para programadores, por um programador.
             </p>
           </div>
         </div>

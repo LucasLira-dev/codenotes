@@ -56,7 +56,7 @@ export const NotesMenu = ({ onClose, isDesktop }: NotesMenuProps) => {
                     <div
                     className='flex gap-3 items-center px-3 py-2 hover:bg-[var(--chart2-secondary)] rounded'>
                         <MdOutlineExitToApp className="text-[var(--foreground)]" />
-                        <a href="/editor" className="text-[var(--foreground)]"> Sair </a>
+                        <a href="/" className="text-[var(--foreground)]"> Sair </a>
                     </div>
                 </div>
 

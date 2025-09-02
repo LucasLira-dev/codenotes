@@ -28,4 +28,19 @@ export class NotesService {
         return await res.json();
     }
 
+    async getNotes(token: string) {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/my-notes`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to fetch notes");
+        }
+
+        return await res.json();
+    }
+
 }

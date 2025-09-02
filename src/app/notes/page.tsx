@@ -1,8 +1,11 @@
 'use client'
 
-// import { EmptyNotes } from "@/components/EmptyNotes/emptyNotes";
-import  NoteInformations from "@/components/NoteInformations/noteInformations"
-import { NotesMenu } from "@/components/NotesMenu/notesMenu";
+import Loading from "@/components/Loading/loading";
+import  NoteInformations from "@/components/NotesComponents/NoteInformations/noteInformations"
+import { NotesMenu } from "@/components/NotesComponents/NotesMenu/notesMenu";
+import { NotesProvider } from "@/contexts/NotesContext";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaBars, FaPlus } from "react-icons/fa";
 
@@ -19,8 +22,25 @@ export default function Notes(){
     return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
+  const { data: session, status } = useSession()
+    const router = useRouter()
+  
+    useEffect(() => {
+      if (status === "unauthenticated") {
+        router.push("/login")
+      }
+    }, [status, router, session?.accessToken])
+  
+    if (status === "loading") {
+      return <Loading />
+    }
+  
+    if (status === "unauthenticated" || !session?.accessToken) {
+      router.push("/login")
+    }
+
     return (
-      <>
+      <NotesProvider>
         {!isDesktop && menuOpen && (
           <div className="fixed inset-0 z-50">
             <NotesMenu 
@@ -79,6 +99,6 @@ export default function Notes(){
           <NoteInformations />
         </main>
       </div>
-      </>
+      </NotesProvider>
     );
 }

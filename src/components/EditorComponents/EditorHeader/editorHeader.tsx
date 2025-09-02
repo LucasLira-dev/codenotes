@@ -9,7 +9,9 @@ import { useEditor } from '@/contexts/EditorContext'
 
 export const EditorHeader = () => {
 
-    const {saveNote, saving} = useEditor();
+    const {saveNote, saving, title, code, language} = useEditor();
+    // Verifica se algum campo está vazio
+    const isDisabled = !title?.trim() || !code?.trim() || !language?.trim();
 
     return (
         <header
@@ -39,7 +41,7 @@ export const EditorHeader = () => {
             <div
             className="flex gap-4">
                 <Link
-                href="/"
+                href="/notes"
                 className="bg-[var(--background)] border-1 border-[var(--border)] text-[var(--foreground)] hover:brightness-90 py-1 px-3 rounded cursor-pointer flex items-center gap-1"
                 >
                     <LuNotebookText className="h-4 w-4" />
@@ -47,7 +49,8 @@ export const EditorHeader = () => {
                 </Link>
                 <button
                 className="bg-[var(--primary)] text-black hover:brightness-90 py-1 px-3 rounded cursor-pointer flex items-center gap-1"
-                onClick={saveNote}>
+                onClick={saveNote}
+                disabled={isDisabled || saving}>
                     <FaRegSave className="h-4 w-4" />
                     {saving ? "Salvando..." : "Salvar"}
                 </button>
