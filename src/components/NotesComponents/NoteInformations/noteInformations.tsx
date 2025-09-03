@@ -16,8 +16,26 @@ export default function NoteInformations() {
     const { notes } = useNotes()
     const [loading, setLoading] = useState(true)
 
+    // Calcula linguagem mais usada
+    const languageCounts: Record<string, number> = {};
+        notes.forEach(note => {
+            if (note.language) {
+                languageCounts[note.language] = (languageCounts[note.language] || 0) + 1;
+            }
+        });
+    const mostUsedLanguage = Object.entries(languageCounts)
+        .sort(([, a], [, b]) => b - a)[0]?.[0] || "Nenhuma";
+    const mostUsedLanguageCount = languageCounts[mostUsedLanguage] || 0;
+
+    // Calcula notas da última semana
+    const notesThisWeek = notes.filter(note => {
+        const created = new Date(note.createdAt)
+        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+        return created >= weekAgo
+    }).length
+
+
     useEffect(() => {
-        // Simula carregamento (substitua por lógica real se necessário)
         const timer = setTimeout(() => setLoading(false), 3000)
         return () => clearTimeout(timer)
     }, [])
@@ -43,7 +61,7 @@ export default function NoteInformations() {
                         </CardHeader>
                         <CardContent className="flex flex-col p-4">
                             <span className="text-2xl font-bold text-[var(--foreground)]">{notes.length}</span>
-                            <span className="text-sm text-gray-400"> + 0 essa semana </span>
+                            <span className="text-sm text-gray-400"> + {notesThisWeek} essa semana </span>
                         </CardContent>
                     </Card>
 
@@ -51,7 +69,7 @@ export default function NoteInformations() {
                         <CardHeader className=" p-4 text-[var(--foreground)]">
                             <div className="flex flex-row items-center justify-between">
                                 <CardTitle>
-                                    Blocos de Códigos
+                                    Linguagem mais utilizada
                                 </CardTitle>
                                 <div>
                                     <Code2 />
@@ -59,9 +77,11 @@ export default function NoteInformations() {
                             </div>
                         </CardHeader>
                         <CardContent className="flex flex-col p-4">
-                            <span className="text-2xl font-bold text-[var(--foreground)]">0</span>
+                            <span className="text-2xl font-bold text-[var(--foreground)]">
+                                {mostUsedLanguageCount}
+                            </span>
                             <span className="text-sm text-gray-400"> 
-                                 linguagem: python
+                                 linguagem: {mostUsedLanguage}
                             </span>
                         </CardContent>
                     </Card>

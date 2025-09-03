@@ -4,6 +4,7 @@ import { FaCode, FaPlus } from 'react-icons/fa'
 import { LuNotebookText } from "react-icons/lu";
 import { CiSettings } from "react-icons/ci";
 import { MdOutlineExitToApp } from "react-icons/md";
+import Link from 'next/link';
 
 interface NotesMenuProps {
     onClose: () => void,
@@ -41,7 +42,7 @@ export const NotesMenu = ({ onClose, isDesktop }: NotesMenuProps) => {
                     <div
                     className='flex gap-3 px-3 py-2 items-center hover:bg-[var(--chart2-secondary)] rounded'>
                         <FaPlus className="text-[var(--foreground)] " />
-                        <a href="/editor" className="text-[var(--foreground)]">Editor</a>
+                        <Link href="/editor" className="text-[var(--foreground)]">Editor</Link>
                     </div>
                     
                 </div>
@@ -51,12 +52,12 @@ export const NotesMenu = ({ onClose, isDesktop }: NotesMenuProps) => {
                     <div
                     className='flex gap-3 px-3 py-2 items-center hover:bg-[var(--chart2-secondary)] rounded'>
                         <CiSettings className="text-[var(--foreground)]" />
-                        <a href="/settings" className="text-[var(--foreground)]">Configurações</a>
+                        <Link href="/settings" className="text-[var(--foreground)]">Configurações</Link>
                     </div>
                     <div
                     className='flex gap-3 items-center px-3 py-2 hover:bg-[var(--chart2-secondary)] rounded'>
                         <MdOutlineExitToApp className="text-[var(--foreground)]" />
-                        <a href="/" className="text-[var(--foreground)]"> Sair </a>
+                        <Link href="/" className="text-[var(--foreground)]"> Sair </Link>
                     </div>
                 </div>
 
