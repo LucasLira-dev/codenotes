@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useContext } from 'react';
+import { createContext, useState, ReactNode, useContext, useEffect } from 'react';
 import { useSession } from 'next-auth/react'
 import { NotesService } from '@/service/notesService'
 
@@ -8,8 +8,8 @@ export interface Note {
   title: string;
   code: string;
   language: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   // Add other fields as needed
 }
 
@@ -17,7 +17,8 @@ export interface Note {
 export interface NotesContextType {
   notes: Note[];
   setNotes: (notes: Note[]) => void;
-  // Add other properties/methods as needed
+  updateNote: (id: number, title: string, code: string) => Promise<void>;
+  deleteNote: (id: number) => Promise<void>;
 }
 
 const NotesContext = createContext<NotesContextType | undefined>(undefined);
@@ -32,7 +33,7 @@ export const NotesProvider = ({ children }: NotesContextProps) => {
 
   const { data: session } = useSession();
 
-  try {
+  useEffect(() => {
     if (session?.accessToken) {
       const notesService = new NotesService();
       notesService.getNotes(session.accessToken).then(fetchedNotes => {
@@ -41,12 +42,41 @@ export const NotesProvider = ({ children }: NotesContextProps) => {
         console.error("Erro ao buscar notas:", error);
       });
     }
-  } catch (error) {
-    console.error("Erro ao buscar notas:", error);
-  }
+  }, [session?.accessToken]);
+
+  // Função para editar nota
+  const updateNote = async (id: number, title: string, code: string) => {
+    if (!session?.accessToken) return;
+    const notesService = new NotesService();
+    try {
+      const updated = await notesService.editNote(id, { title, code, token: session.accessToken });
+      setNotes((prev) =>
+        prev.map((note) =>
+          note.id === id
+            ? { ...note, ...updated, language: updated.language ?? note.language }
+            : note
+        )
+      );
+
+    } catch (error) {
+      console.error("Erro ao editar nota:", error);
+    }
+  };
+
+  // Função para deletar nota
+  const deleteNote = async (id: number) => {
+    if (!session?.accessToken) return;
+    const notesService = new NotesService();
+    try {
+      await notesService.deleteNote(id, session.accessToken);
+      setNotes(prev => prev.filter(note => note.id !== id));
+    } catch (error) {
+      console.error("Erro ao deletar nota:", error);
+    }
+  };
 
   return (
-    <NotesContext.Provider value={{ notes, setNotes }}>
+    <NotesContext.Provider value={{ notes, setNotes, updateNote, deleteNote }}>
       {children}
     </NotesContext.Provider>
   );

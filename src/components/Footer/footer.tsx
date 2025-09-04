@@ -7,7 +7,7 @@ export const Footer = () => {
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="flex items-center gap-2 mb-4 md:mb-0">
               <Code2 className="h-6 w-6 text-[var(--primary)]" />
-              <span className="font-semibold">CodeNotes</span>
+              <span className="font-semibold text-[var(--foreground)]">CodeNotes</span>
             </div>
             <p className="text-sm text-[var(--muted-foreground)]">
               © 2025 CodeNotes. Feito para programadores, por um programador.

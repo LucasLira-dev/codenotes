@@ -5,6 +5,13 @@ interface CreateNoteData {
     token: string;
 }
 
+interface UpdateNoteData {
+    title: string;
+    code: string;
+    language: string;
+    token: string;
+}
+
 export class NotesService {
 
     async createNote(data: CreateNoteData) {
@@ -43,4 +50,30 @@ export class NotesService {
         return await res.json();
     }
 
+    async editNote(id: number, data: Partial<UpdateNoteData>) {
+        const {token, ...fields} = data
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(fields)
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to edit note");
+        }
+
+        return await res.json();
+    }
+
+    deleteNote(id: number, token: string) {
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+    }
 }
