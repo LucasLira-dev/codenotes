@@ -5,6 +5,7 @@ import  NoteInformations from "@/components/NotesComponents/NoteInformations/not
 import { NotesMenu } from "@/components/NotesComponents/NotesMenu/notesMenu";
 import { NotesProvider } from "@/contexts/NotesContext";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaBars, FaPlus } from "react-icons/fa";
@@ -83,7 +84,8 @@ export default function Notes(){
               </p>
             </div>
           </div>
-          <button
+          <Link
+          href="/editor"
           className="bg-[var(--primary)] text-[var(--chart5-primary)] hover:brightness-90 py-1 px-3 rounded cursor-pointer flex items-center gap-3">
             <FaPlus size={14} />
             <span
@@ -92,10 +94,9 @@ export default function Notes(){
               <span className="md:hidden"> Nova </span> 
               <span className="hidden md:block"> Nova Nota </span>
             </span>
-          </button>
+          </Link>
         </header>
         <main className="bg-[var(--background)] min-h-screen">
-          {/* <EmptyNotes /> */}
           <NoteInformations />
         </main>
       </div>

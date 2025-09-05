@@ -8,11 +8,16 @@ import { Code2, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import CadastrarUsuario from "./action"
 import { useRouter } from 'next/navigation'
+import { useState } from "react"
 
 export default function RegisterPage() {
 
   const router = useRouter()
+  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const strongPasswordRegex = /^(?=(?:.*[A-Za-z]){5,})(?=.*[^A-Za-z0-9]).+$/;
 
   return (
   <div className="min-h-screen bg-gradient-to-br from-[var(--background)] via-[var(--card)] to-[var(--background)] flex items-center justify-center p-4">
@@ -41,6 +46,7 @@ export default function RegisterPage() {
             <CardDescription className="text-center text-[var(--muted-foreground)]">Crie sua conta gratuita para começar</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {error && <p className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">{error}</p>}
             <form 
             className="space-y-4"
             onSubmit={
@@ -49,18 +55,43 @@ export default function RegisterPage() {
                     const form = e.currentTarget;
                     const formData = new FormData(form);
                     const email = String(formData.get('email') ?? '');
+                    const password = String(formData.get('password') ?? '');
+                    const confirmPassword = String(formData.get('confirmPassword') ?? '');
 
-                    if(!emailRegex.test(email)){
-                      alert("Digite um email válido.");
+                    if (!emailRegex.test(email)) {
+                      setError("Digite um email válido.");
+                      setIsLoading(false);
                       return;
                     }
-                    const result = await CadastrarUsuario({
-                    userEmail: email,
-                    userPassword: String(formData.get('password') ?? ''),
-                })
-                if (result) {
-                    router.push('/editor')
-                }
+
+                    if (!strongPasswordRegex.test(password)) {
+                      setError("A senha deve ter pelo menos 5 letras e 1 caractere especial.");
+                      setIsLoading(false);
+                      return;
+                    }
+
+                    if (password !== confirmPassword) {
+                      setError("As senhas não conferem.");
+                      setIsLoading(false);
+                      return;
+                    }
+
+                    try {
+                      const result = await CadastrarUsuario({
+                        userEmail: email,
+                        userPassword: password,
+                      });
+                      if (result) {
+                        router.push('/editor');
+                      } else {
+                        setError("Erro ao registrar. Tente novamente.");
+                      }
+                    } catch (err) {
+                      setError("Erro ao registrar. Tente novamente.");
+                      console.log(err)
+                    } finally {
+                      setIsLoading(false);
+                    }
             }}>
               <div className="space-y-2">
                 <Label 
@@ -120,7 +151,7 @@ export default function RegisterPage() {
                 </Label>
               </div>
               <Button type="submit" className="w-full text-[var(--foreground)] bg-[var(--primary)]">
-                Criar conta
+                {isLoading ? "Registrando..." : "Criar conta"}
               </Button>
             </form>
 

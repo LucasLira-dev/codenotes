@@ -120,9 +120,9 @@ export default function LoginPage() {
                     Lembrar de mim
                   </Label>
                 </div>
-                <Link href="/forgot-password" className="text-sm text-[var(--primary)] hover:underline">
+                {/* <Link href="/forgot-password" className="text-sm text-[var(--primary)] hover:underline">
                   Esqueceu a senha?
-                </Link>
+                </Link> */}
               </div>
               <Button type="submit" className="w-full text-[var(--foreground)] bg-[var(--primary)]" disabled={isLoading}>
                 {isLoading ? "Entrando..." : "Entrar"}

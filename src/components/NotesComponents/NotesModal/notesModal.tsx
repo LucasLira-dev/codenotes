@@ -123,7 +123,7 @@ export const NotesModal = ({
               <DialogDescription>
                 Confirme para excluir esta anotação permanentemente.
               </DialogDescription>
-              <p className="mb-6">Tem certeza que deseja excluir a nota <span className="font-semibold">ID {note?.id}</span>?</p>
+              <p className="mb-6">Tem certeza que deseja excluir a nota?</p>
               <div className="flex justify-end gap-2">
                 <button
                   className="px-4 py-2 rounded bg-gray-200 text-[var(--card)]"

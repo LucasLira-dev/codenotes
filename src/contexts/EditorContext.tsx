@@ -1,6 +1,7 @@
 import { createContext, useState, ReactNode, useContext } from 'react';
 import { useSession } from 'next-auth/react'
 import { NotesService } from '@/service/notesService'
+import { CustomToast } from '@/components/Toast/toast';
 
 interface EditorContextType {
     title: string
@@ -25,6 +26,12 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
     const [language, setLanguage] = useState("javascript");
     const [saving, setSaving] = useState(false);
 
+    const [toastOpen, setToastOpen] = useState(false);
+    const [toastType, setToastType] = useState<"success" | "error">("success");
+    const [toastTitle, setToastTitle] = useState("");
+    const [toastDesc, setToastDesc] = useState("");
+    
+
     const { data: session } = useSession();
 
     const saveNote = async () => {
@@ -42,10 +49,16 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
                 language,
                 token: session.accessToken
             });
-            alert("Nota salva com sucesso!");
+            setToastOpen(true)
+            setToastType("success")
+            setToastTitle("Booaaa!")
+            setToastDesc("Anotação criada com sucesso!")
         } catch (error) {
             console.error("Erro ao salvar nota:", error);
-            alert("Erro ao salvar nota. Tente novamente.");
+            setToastOpen(true)
+            setToastType("error")
+            setToastTitle("Erro ao salvar nota...")
+            setToastDesc("Tente novamente.")
         } finally {
             setSaving(false);
         }
@@ -54,6 +67,13 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
     return (
         <EditorContext.Provider value={{ title, setTitle, code, setCode, language, setLanguage, saveNote, saving }}>
             {children}
+            <CustomToast
+            open={toastOpen}
+            type={toastType}
+            title={toastTitle}
+            description={toastDesc}
+            onOpenChange={setToastOpen}
+             />
         </EditorContext.Provider>
     );
 };

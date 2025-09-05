@@ -1,6 +1,7 @@
 import { createContext, useState, ReactNode, useContext, useEffect } from 'react';
 import { useSession } from 'next-auth/react'
 import { NotesService } from '@/service/notesService'
+import { CustomToast } from '@/components/Toast/toast';
 
 // Define a Note interface to specify the shape of a note object
 export interface Note {
@@ -30,6 +31,10 @@ interface NotesContextProps {
 
 export const NotesProvider = ({ children }: NotesContextProps) => {
   const [notes, setNotes] = useState<Note[]>([]);
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+  const [toastTitle, setToastTitle] = useState("");
+  const [toastDesc, setToastDesc] = useState("");
 
   const { data: session } = useSession();
 
@@ -57,9 +62,16 @@ export const NotesProvider = ({ children }: NotesContextProps) => {
             : note
         )
       );
-
+      setToastType("success");
+      setToastTitle("Nota editada com sucesso!");
+      setToastDesc("Sua nota foi atualizada.");
+      setToastOpen(true);
     } catch (error) {
       console.error("Erro ao editar nota:", error);
+      setToastType("error");
+      setToastTitle("Erro ao editar nota");
+      setToastDesc("Ocorreu um erro ao editar sua nota.");
+      setToastOpen(true);
     }
   };
 
@@ -70,14 +82,29 @@ export const NotesProvider = ({ children }: NotesContextProps) => {
     try {
       await notesService.deleteNote(id, session.accessToken);
       setNotes(prev => prev.filter(note => note.id !== id));
+      setToastType("success");
+      setToastTitle("Nota deletada com sucesso!");
+      setToastDesc("Sua nota foi removida.");
+      setToastOpen(true);
     } catch (error) {
       console.error("Erro ao deletar nota:", error);
+      setToastType("error");
+      setToastTitle("Erro ao deletar nota");
+      setToastDesc("Ocorreu um erro ao deletar sua nota.");
+      setToastOpen(true);
     }
   };
 
   return (
     <NotesContext.Provider value={{ notes, setNotes, updateNote, deleteNote }}>
       {children}
+      <CustomToast
+        open={toastOpen}
+        type={toastType}
+        title={toastTitle}
+        description={toastDesc}
+        onOpenChange={setToastOpen}
+      />
     </NotesContext.Provider>
   );
 };
