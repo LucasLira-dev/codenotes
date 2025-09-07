@@ -8,9 +8,17 @@ import { Code2, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import CadastrarUsuario from "./action"
 import { useRouter } from 'next/navigation'
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import { useSession } from "next-auth/react"
+import Loading from "@/components/Loading/loading"
+
 
 export default function RegisterPage() {
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter()
   const [error, setError] = useState("")
@@ -18,6 +26,18 @@ export default function RegisterPage() {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const strongPasswordRegex = /^(?=(?:.*[A-Za-z]){5,})(?=.*[^A-Za-z0-9]).+$/;
+
+  const { data: session, status } = useSession();
+  
+    useEffect(() => {
+      if (status === "authenticated") {
+        router.push("/");
+      }
+    }, [status, router, session?.accessToken]);
+  
+    if (status === "loading") {
+      return <Loading />;
+    }
 
   return (
   <div className="min-h-screen bg-gradient-to-br from-[var(--background)] via-[var(--card)] to-[var(--background)] flex items-center justify-center p-4">
@@ -52,6 +72,7 @@ export default function RegisterPage() {
             onSubmit={
                 async(e)=> {
                     e.preventDefault();
+                    setIsLoading(true)
                     const form = e.currentTarget;
                     const formData = new FormData(form);
                     const email = String(formData.get('email') ?? '');
@@ -109,38 +130,66 @@ export default function RegisterPage() {
                   required
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label 
                 htmlFor="password"
                 className="text-[var(--foreground)]"
                 >Senha</Label>
-                <Input
+                <div
+                className="relative">
+                  <Input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   className="bg-[var(--input)] border-[var(--border)] text-[var(--foreground)]"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <IoEyeOffOutline size={20} /> : <IoEyeOutline size={20} />}
+                </button>
+                </div>
+                
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label 
                 htmlFor="confirmPassword"
                 className="text-[var(--foreground)]">
                     Confirmar senha
                 </Label>
-                <Input
+                <div
+                className="relative">
+                  <Input
                   id="confirmPassword"
-                  type="password"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="••••••••"
                   className="bg-[var(--input)] border-[var(--border)] text-[var(--foreground)]"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors cursor-pointer"
+                  tabIndex={-1}
+                  >
+                    {showConfirmPassword ? <IoEyeOffOutline size={20} /> : <IoEyeOutline size={20} />}
+                </button>
+                </div>
+                
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <input id="terms" type="checkbox" className="rounded border-[var(--border)]" required />
-                <Label htmlFor="terms" className="text-sm text-[var(--muted-foreground)]">
-                  Aceito os{" "}
+                <Label htmlFor="terms" className="text-sm text-[var(--muted-foreground)] break-words">
+                  <span
+                  className="hidden sm:block">
+                    Aceito os{" "}
+                  </span>
                   <Link href="/terms" className="text-[var(--primary)] hover:underline">
                     termos de uso
                   </Link>{" "}

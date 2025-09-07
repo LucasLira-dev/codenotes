@@ -29,6 +29,11 @@ export const AllNotes = () => {
       setModalOpen(true);
     };
 
+    
+    notes.forEach(note => {
+      console.log("createdAt:", note.createdAt, typeof note.createdAt);
+});
+
     return (
       <article className="flex flex-col gap-2">
         {notes.length > 0 &&
@@ -37,38 +42,30 @@ export const AllNotes = () => {
               className="flex flex-col justify-between bg-[var(--card)] border-[var(--border)] shadow-md w-full "
               key={idx}
             >
-              <CardHeader
-              >
-              <div
-              className="flex justify-between">
-                <div>
-                  <CardTitle className="text-[var(--foreground)] text-[18px]">
-                    {note.title}
-                  </CardTitle>
-                  <p 
-                  className="text-sm text-gray-400">
-                    {note.language}
-                  </p>
-                </div>
-                <div
-                className="flex gap-2 text[16px]">
-                  <button
-                    onClick={() => {
-                      handleEdit(note);
-                    }}
-                  >
-                    <Pencil className=" text-[var(--foreground)] cursor-pointer" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleDelete(note);
-                    }}
-                  >
-                    <Trash
-                      className="text-[var(--foreground)] cursor-pointer"
-                    />
-                  </button>
-                </div>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-col gap-1 min-w-0">
+                    <CardTitle className="text-[var(--foreground)] text-[18px] truncate leading-normal w-full max-w-xs md:max-w-full">
+                      {note.title}
+                    </CardTitle>
+                    <p className="text-sm text-gray-400">{note.language}</p>
+                  </div>
+                  <div className="flex gap-2 items-center text-[16px]">
+                    <button
+                      type="button"
+                      onClick={() => handleEdit(note)}
+                      aria-label="Editar nota"
+                    >
+                      <Pencil className="text-[var(--foreground)] cursor-pointer" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(note)}
+                      aria-label="Excluir nota"
+                    >
+                      <Trash className="text-[var(--foreground)] cursor-pointer" />
+                    </button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -91,10 +88,7 @@ export const AllNotes = () => {
                       {tokens.map((line, i) => (
                         <div key={i} {...getLineProps({ line })}>
                           {line.map((token, key) => (
-                            <span
-                              key={key}
-                              {...getTokenProps({ token })}
-                            />
+                            <span key={key} {...getTokenProps({ token })} />
                           ))}
                         </div>
                       ))}
@@ -104,33 +98,33 @@ export const AllNotes = () => {
 
                 <p className="text-sm text-gray-400">
                   {note.createdAt && !isNaN(new Date(note.createdAt).getTime())
-                  ? new Intl.DateTimeFormat("pt-BR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }).format(new Date(note.createdAt))
-                  : "Data inválida"}
+                    ? new Intl.DateTimeFormat("pt-BR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }).format(new Date(note.createdAt))
+                    : "Data inválida"}
                 </p>
               </CardContent>
             </Card>
           ))}
 
-          <NotesModal
-            open={modalOpen}
-            onClose={() => setModalOpen(false)}
-            note={selectedNote}
-            action={modalAction}
-            onSave={(title, code) => {
-              updateNote(selectedNote!.id, title, code);
-              setModalOpen(false);
-            }}
-            onDelete={()=>{
-              deleteNote(selectedNote!.id);
-              setModalOpen(false);
-            }}
-          />
+        <NotesModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          note={selectedNote}
+          action={modalAction}
+          onSave={(title, code) => {
+            updateNote(selectedNote!.id, title, code);
+            setModalOpen(false);
+          }}
+          onDelete={() => {
+            deleteNote(selectedNote!.id);
+            setModalOpen(false);
+          }}
+        />
       </article>
     );
 }

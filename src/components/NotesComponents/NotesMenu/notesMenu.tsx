@@ -13,7 +13,7 @@ interface NotesMenuProps {
 
 export const NotesMenu = ({ onClose, isDesktop }: NotesMenuProps) => {
     return (
-        <aside className="fixed left-0 top-0 h-screen w-56 bg-[#1E293B] flex flex-col border-r border-[var(--border)] z-50">
+        <aside className="fixed left-0 top-0 h-full max-h-screen w-56 bg-[#1E293B] flex flex-col border-r border-[var(--border)] z-50 overflow-y-auto ">
             <div className="flex justify-between items-center mb-6 mt-6 px-4 pb-2 border-b-1 border-b-[var(--border)]">
                 <div className="flex gap-2 text-[16px]">
                     <FaCode className="text-[var(--primary)] mt-1" />

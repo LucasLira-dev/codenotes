@@ -19,6 +19,17 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: "CodeNotes - Plataforma de Anotações para Programadores",
   description: "Organize seus estudos, anotações e exemplos práticos de programação em um só lugar",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "CodeNotes - Plataforma de Anotações para Programadores",
+    description: "Organize seus estudos, anotações e exemplos práticos de programação em um só lugar",
+    siteName: "CodeNotes",
+    images: ["/capa.png"],
+    locale: "pt-BR",
+    type: "website",
+  }
 }
 
 
@@ -28,7 +39,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body
         className={`${geist.variable} ${manrope.variable} antialiased`}
       >

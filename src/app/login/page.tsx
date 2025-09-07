@@ -1,55 +1,77 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Code2, ArrowLeft } from "lucide-react"
-import Link from "next/link"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Code2, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
-import { signIn} from "next-auth/react"
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+
+import { signIn, useSession } from "next-auth/react";
+import Loading from "@/components/Loading/loading";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
-    try {
-         // Login via NextAuth
-          const result = await signIn("credentials", {
-            email,
-            password,
-            redirect: false,
-            callbackUrl: "/editor",
-          })
+  const { data: session, status } = useSession();
 
-          if (result?.error) {
-            setError("Email ou senha inválidos")
-          } else if (result?.ok || result?.url) {
-            router.push("/editor")
-          }
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/");
     }
-    catch (err) {
-      setError("Erro ao fazer login. Tente novamente.")
-      console.log(err)
-    } finally {
-      setIsLoading(false)
-    }
+  }, [status, router, session?.accessToken]);
+
+  if (status === "loading") {
+    return <Loading />;
   }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      // Login via NextAuth
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl: "/editor",
+      });
+
+      if (result?.error) {
+        setError("Email ou senha inválidos");
+      } else if (result?.ok || result?.url) {
+        router.push("/editor");
+      }
+    } catch (err) {
+      setError("Erro ao fazer login. Tente novamente.");
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-  <div className="min-h-screen bg-gradient-to-br from-[var(--background)] via-[var(--card)] to-[var(--background)] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[var(--background)] via-[var(--card)] to-[var(--background)] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
@@ -62,29 +84,39 @@ export default function LoginPage() {
           </Link>
           <div className="flex items-center justify-center gap-2 mb-4">
             <Code2 className="h-8 w-8 text-[var(--primary)]" />
-            <h1 className="text-2xl font-bold text-[var(--foreground)]">CodeNotes</h1>
+            <h1 className="text-2xl font-bold text-[var(--foreground)]">
+              CodeNotes
+            </h1>
           </div>
-          <h2 className="text-xl font-semibold text-[var(--foreground)]">Bem-vindo de volta</h2>
-          <p className="text-[var(--muted-foreground)]">Entre na sua conta para continuar</p>
+          <h2 className="text-xl font-semibold text-[var(--foreground)]">
+            Bem-vindo de volta
+          </h2>
+          <p className="text-[var(--muted-foreground)]">
+            Entre na sua conta para continuar
+          </p>
         </div>
 
         {/* Login Form */}
-  <Card className="border-[var(--border)] shadow-lg">
+        <Card className="border-[var(--border)] shadow-lg">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center text-[var(--foreground)]">Entrar</CardTitle>
-            <CardDescription className="text-center text-[var(--muted-foreground)]">Digite seu email e senha para acessar sua conta</CardDescription>
+            <CardTitle className="text-2xl text-center text-[var(--foreground)]">
+              Entrar
+            </CardTitle>
+            <CardDescription className="text-center text-[var(--muted-foreground)]">
+              Digite seu email e senha para acessar sua conta
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {error && (
-              <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">{error}</div>
+              <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+                {error}
+              </div>
             )}
 
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">
-                <Label 
-                htmlFor="email"
-                className="text-[var(--foreground)]">
-                    Email
+                <Label htmlFor="email" className="text-[var(--foreground)]">
+                  Email
                 </Label>
                 <Input
                   id="email"
@@ -96,27 +128,45 @@ export default function LoginPage() {
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label 
-                htmlFor="password"
-                className="text-[var(--foreground)]"
-                >
-                    Senha
+              <div className="space-y-2 relative">
+                <Label htmlFor="password" className="text-[var(--foreground)]">
+                  Senha
                 </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  className="bg-[var(--input)] border-[var(--border)] text-[var(--foreground)]"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    className="bg-[var(--input)] border-[var(--border)] text-[var(--foreground)]"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors cursor-pointer"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <IoEyeOffOutline size={20} />
+                    ) : (
+                      <IoEyeOutline size={20} />
+                    )}
+                  </button>
+                </div>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <input id="remember" type="checkbox" className="rounded border-[var(--border)]" />
-                  <Label htmlFor="remember" className="text-sm text-[var(--muted-foreground)]">
+                  <input
+                    id="remember"
+                    type="checkbox"
+                    className="rounded border-[var(--border)]"
+                  />
+                  <Label
+                    htmlFor="remember"
+                    className="text-sm text-[var(--muted-foreground)]"
+                  >
                     Lembrar de mim
                   </Label>
                 </div>
@@ -124,7 +174,11 @@ export default function LoginPage() {
                   Esqueceu a senha?
                 </Link> */}
               </div>
-              <Button type="submit" className="w-full text-[var(--foreground)] bg-[var(--primary)]" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full text-[var(--foreground)] bg-[var(--primary)]"
+                disabled={isLoading}
+              >
                 {isLoading ? "Entrando..." : "Entrar"}
               </Button>
             </form>
@@ -158,7 +212,10 @@ export default function LoginPage() {
 
             <div className="text-center text-sm text-[var(--muted-foreground)]">
               <span>Não tem uma conta? </span>
-              <Link href="/register" className="text-[var(--primary)] hover:underline">
+              <Link
+                href="/register"
+                className="text-[var(--primary)] hover:underline"
+              >
                 Criar conta
               </Link>
             </div>
@@ -166,5 +223,5 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

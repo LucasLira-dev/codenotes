@@ -40,6 +40,14 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
             return;
         }
 
+        if (title.length < 3) {
+            setToastOpen(true)
+            setToastType("error")
+            setToastTitle("Título muito curto...")
+            setToastDesc("O título deve ter pelo menos 3 caracteres.")
+            return;
+        }
+
         setSaving(true);
         try {
             const notesService = new NotesService();

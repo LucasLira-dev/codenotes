@@ -99,14 +99,14 @@ export const NotesModal = ({
               <div className="flex justify-end gap-2 mt-2">
                 <button
                   type="button"
-                  className="px-4 py-2 rounded bg-gray-200 text-[var(--card)]"
+                  className="px-4 py-2 rounded bg-gray-200 text-[var(--card)] cursor-pointer"
                   onClick={onClose}
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded bg-[var(--primary)] text-black font-semibold"
+                  className="px-4 py-2 rounded bg-[var(--primary)] text-black font-semibold cursor-pointer"
                 >
                   Salvar
                 </button>
@@ -126,13 +126,13 @@ export const NotesModal = ({
               <p className="mb-6">Tem certeza que deseja excluir a nota?</p>
               <div className="flex justify-end gap-2">
                 <button
-                  className="px-4 py-2 rounded bg-gray-200 text-[var(--card)]"
+                  className="px-4 py-2 rounded bg-gray-200 text-[var(--card)] cursor-pointer"
                   onClick={onClose}
                 >
                   Cancelar
                 </button>
                 <button
-                  className="px-4 py-2 rounded bg-red-500 text-white font-semibold"
+                  className="px-4 py-2 rounded bg-red-500 text-white font-semibold cursor-pointer"
                   onClick={onDelete}
                 >
                   Confirmar
