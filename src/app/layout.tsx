@@ -29,7 +29,14 @@ export const metadata: Metadata = {
     images: ["/capa.png"],
     locale: "pt-BR",
     type: "website",
-  }
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CodeNotes - Plataforma de Anotações para Programadores",
+    description: "Organize seus estudos, anotações e exemplos práticos de programação em um só lugar",
+    images: ["/capa.png"],
+  },
+  metadataBase: new URL("https://codenotes-wheat.vercel.app"),
 }
 
 

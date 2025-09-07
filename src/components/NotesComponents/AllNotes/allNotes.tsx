@@ -29,11 +29,6 @@ export const AllNotes = () => {
       setModalOpen(true);
     };
 
-    
-    notes.forEach(note => {
-      console.log("createdAt:", note.createdAt, typeof note.createdAt);
-});
-
     return (
       <article className="flex flex-col gap-2">
         {notes.length > 0 &&
@@ -45,7 +40,7 @@ export const AllNotes = () => {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <div className="flex flex-col gap-1 min-w-0">
-                    <CardTitle className="text-[var(--foreground)] text-[18px] truncate leading-normal w-full max-w-xs md:max-w-full">
+                    <CardTitle className="text-[var(--foreground)] text-[18px] truncate leading-normal w-full max-w-[250px] md:max-w-full">
                       {note.title}
                     </CardTitle>
                     <p className="text-sm text-gray-400">{note.language}</p>
