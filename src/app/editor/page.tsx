@@ -34,7 +34,7 @@ export default function EditorPage() {
     <EditorProvider>
       <EditorHeader />
       <main
-      className='bg-[var(--background)] flex flex-col justify-center items-center'>
+      className='bg-[var(--background)] flex flex-col justify-center items-center min-h-screen w-full'>
         <section
         className="container mx-auto flex flex-col md:max-w-[1000px] px-4 py-16 gap-4">
           <article>

@@ -30,18 +30,18 @@ import {
 } from "@/components/ui/tabs"
 import { useEffect, useRef, useState } from "react";
 
-import { useEditor } from '@/contexts/EditorContext'
+import { useEditorDemo } from "@/contexts/DemoContext";
 
-export const CodeEditor = () => {
+export const CodeEditorDemo = () => {
 
-    const { code, setCode } = useEditor();
+    const { codeDemo, setCodeDemo } = useEditorDemo();
 
     const [copied, setCopied] = useState(false)
     const [output, setOutput ] = useState<string[]>([])
     const workerRef = useRef<Worker | null>(null);
 
     const [activeTab, setActiveTab ] = useState("editor")
-    const { language, setLanguage} = useEditor();
+    const { languageDemo, setLanguageDemo} = useEditorDemo();
 
     const languages = {
         javascript: javascript( { jsx: true }),
@@ -89,13 +89,13 @@ export const CodeEditor = () => {
   }, []);
 
   const runCode = () => {
-    workerRef.current?.postMessage(code);
+    workerRef.current?.postMessage(codeDemo);
   };
 
 
   const copyCode = async () => {
   try {
-    await navigator.clipboard.writeText(code);
+    await navigator.clipboard.writeText(codeDemo);
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   } catch (err) {
@@ -123,7 +123,7 @@ export const CodeEditor = () => {
                     className="flex items-center gap-4">
                         <Select
                             onValueChange={(value) => {
-                                setLanguage(value)
+                                setLanguageDemo(value)
                             }}
                             defaultValue="javascript">
                             <SelectTrigger
@@ -196,7 +196,7 @@ export const CodeEditor = () => {
                             </div>
 
                             {
-                                language==="javascript" && (
+                                languageDemo==="javascript" && (
                                     <button
                                     className="bg-[var(--primary)] text-black hover:brightness-90 py-1 px-3 rounded cursor-pointer flex items-center gap-2"
                                     onClick={() => { runCode(); setActiveTab("saida"); }}>
@@ -210,16 +210,16 @@ export const CodeEditor = () => {
                         value="editor"
                         className="bg-[#0F172A] text-[var(--foreground)] p-4 overflow-auto h-[400px] md:max-h-[700px]">
                             <CodeMirror
-                                value={code}
+                                value={codeDemo}
                                 theme= {oneDark}
-                                extensions={[languages[language as keyof typeof languages],
+                                extensions={[languages[languageDemo as keyof typeof languages],
                                 autocompletion({
                                     activateOnTyping: true,
                                     maxRenderedOptions: 10
                                 })
                                 ]}
                                 height= '350px'
-                                onChange={(value) => setCode(value)}
+                                onChange={(value) => setCodeDemo(value)}
                             />
                         
                         </TabsContent>
@@ -227,7 +227,7 @@ export const CodeEditor = () => {
                         value="saida"
                         className="bg-[#293548] text-[var(--foreground)] p-4 overflow-auto h-[400px] max-h-[700px]">
                             <div className="prose">
-                                { language==="javascript" ? (
+                                { languageDemo==="javascript" ? (
                                     output.map((line, i) => (
                                         <div key={i}>{line}</div>
                                     ))

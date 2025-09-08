@@ -38,29 +38,29 @@ export const AllNotes = () => {
               key={idx}
             >
               <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div className="flex flex-col gap-1 min-w-0">
-                    <CardTitle className="text-[var(--foreground)] text-[18px] truncate leading-normal w-full max-w-[250px] md:max-w-full">
+                <div className="flex flex-col gap-1 min-w-0">
+                  <div className="flex justify-between items-center w-full">
+                    <CardTitle className="text-[var(--foreground)] text-[18px] leading-normal w-full md:max-w-full">
                       {note.title}
                     </CardTitle>
-                    <p className="text-sm text-gray-400">{note.language}</p>
+                    <div className="flex gap-2 items-center text-[16px]">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(note)}
+                        aria-label="Editar nota"
+                      >
+                        <Pencil className="text-[var(--foreground)] cursor-pointer" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(note)}
+                        aria-label="Excluir nota"
+                      >
+                        <Trash className="text-[var(--foreground)] cursor-pointer" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex gap-2 items-center text-[16px]">
-                    <button
-                      type="button"
-                      onClick={() => handleEdit(note)}
-                      aria-label="Editar nota"
-                    >
-                      <Pencil className="text-[var(--foreground)] cursor-pointer" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(note)}
-                      aria-label="Excluir nota"
-                    >
-                      <Trash className="text-[var(--foreground)] cursor-pointer" />
-                    </button>
-                  </div>
+                  <p className="text-sm text-gray-400">{note.language}</p>
                 </div>
               </CardHeader>
               <CardContent>
