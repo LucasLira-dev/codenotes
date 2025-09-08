@@ -77,7 +77,10 @@ const authOptions: NextAuthOptions = {
         } catch (error) {
           console.error("Erro ao renovar token:", error);
           // falha no refresh, limpar dados de autenticação
-          return {};
+          delete token.accessToken;
+          delete token.expiresAt;
+          delete token.refreshToken;
+          return token;
         }
       }
 
@@ -85,10 +88,14 @@ const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
+      if (!token.accessToken) {
+        // Sessão inválida, pode retornar null ou apenas o objeto padrão
+        return session;
+      }
       session.accessToken = token.accessToken;
       session.expiresAt = token.expiresAt;
       return session;
-    },
+      },
   },
 
   pages: {

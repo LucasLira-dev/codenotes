@@ -1,6 +1,7 @@
 import { useContext, useState, ReactNode, createContext } from 'react'
+import { CustomToast } from '@/components/Toast/toast';
 
-interface Note {
+export interface Note {
     title: string;
     code: string;
     language: string;
@@ -34,13 +35,31 @@ export const DemoProvider = ({ children }: DemoProviderProps) => {
     const [savingDemo, setSavingDemo] = useState(false);
     const [notes, setNotes ] = useState([] as Note[]);
 
+    const [toastOpen, setToastOpen] = useState(false);
+    const [toastType, setToastType] = useState<"success" | "error">("success");
+    const [toastTitle, setToastTitle] = useState("");
+    const [toastDesc, setToastDesc] = useState("");
+
     const saveNoteDemo = async () => {
+
+        if (titleDemo.length < 3) {
+            setToastOpen(true)
+            setToastType("error")
+            setToastTitle("Título muito curto...")
+            setToastDesc("O título deve ter pelo menos 3 caracteres.")
+            return;
+        }
+
         // Função de simulação de salvamento
         setSavingDemo(true);
         return new Promise<void>((resolve) => {
             setTimeout(() => {
                 setNotes((prevNotes) => [...prevNotes, { title: titleDemo, code: codeDemo, language: languageDemo }]);
                 setSavingDemo(false);
+                setToastOpen(true)
+                setToastType("success")
+                setToastTitle("Booaaa!")
+                setToastDesc("Anotação criada com sucesso!")
                 resolve();
             }, 2000);
         });
@@ -49,6 +68,13 @@ export const DemoProvider = ({ children }: DemoProviderProps) => {
     return (
         <DemoContext.Provider value={{ titleDemo, setTitleDemo, codeDemo, setCodeDemo, languageDemo, setLanguageDemo, saveNoteDemo, savingDemo, notes, setNotes}}>
             {children}
+            <CustomToast
+            open={toastOpen}
+            type={toastType}
+            title={toastTitle}
+            description={toastDesc}
+            onOpenChange={setToastOpen}
+            />
         </DemoContext.Provider>
     );
 }

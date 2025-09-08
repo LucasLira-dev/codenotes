@@ -34,7 +34,7 @@ export default function LoginPage() {
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (status === "authenticated" && session?.accessToken) {
       router.push("/");
     }
   }, [status, router, session?.accessToken]);

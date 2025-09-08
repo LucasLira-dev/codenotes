@@ -60,7 +60,9 @@ export const AllNotes = () => {
                       </button>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-400">{note.language}</p>
+                  <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 bg-[var(--primary)] bg-opacity-10 border border-[var(--primary)] w-fit">
+                      <span className="text-xs font-medium text-[var(--foreground)]">{note.language}</span>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>

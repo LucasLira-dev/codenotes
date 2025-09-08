@@ -3,6 +3,7 @@
 import {EditorHeaderDemo } from '@/components/DemoComponents/EditorHeaderDemo/editorHeaderDemo'
 import { CodeEditorDemo } from '@/components/DemoComponents/CodeEditorDemo/codeEditorDemo'
 import { TitleInputDemo } from '@/components/DemoComponents/TitleInputDemo/titleInputDemo'
+import { Notes } from '@/components/DemoComponents/Notes/notes'
 import { DemoProvider} from '@/contexts/DemoContext'
 
 export default function EditorPage() {
@@ -21,6 +22,7 @@ export default function EditorPage() {
           </article>
           <CodeEditorDemo
            />
+           <Notes />
         </section>
       </main>
     </DemoProvider>
