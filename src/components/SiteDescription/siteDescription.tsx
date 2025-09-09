@@ -1,5 +1,20 @@
+'use client'
+
+import { useSession } from "next-auth/react";
+import Link from "next/link"
 
 export const SiteDescription = () => {
+
+    const { data, status } = useSession();
+    
+    // Função para determinar o destino do botão
+    const getDestination = () => {
+        if (status === "loading") return "/login"; // Enquanto carrega
+        if (status === "unauthenticated") return "/login"; // Não logado
+        if (data?.accessToken) return "/editor"; // Logado com token válido
+        return "/login"; // Logado mas sem token (expirado)
+      };
+
     return(
         <section
         className="flex flex-col justify-center items-center px-4 py-10 mt-10 max-w-4xl mx-auto">
@@ -17,14 +32,16 @@ export const SiteDescription = () => {
             </p>
             <div
             className="flex items-center gap-4">
-                <button
+                <Link
+                href={getDestination()}
                 className="bg-[var(--primary)] text-black hover:brightness-90 py-1 px-3 rounded cursor-pointer">
                     Começar agora
-                </button>
-                <button
+                </Link>
+                <Link
+                href="/demo"
                 className="bg-[var(--background)] border-1 border-[var(--border)] text-[var(--foreground)] hover:brightness-90 py-1 px-3 rounded cursor-pointer">
                     Ver Demo
-                </button>
+                </Link>
             </div>
         </section>
     )

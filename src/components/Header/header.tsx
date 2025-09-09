@@ -31,10 +31,11 @@ export const Header = () => {
       </div>
       <div
       className="flex gap-3 sm:ml-10 sm:mr-10 md:ml-15 md:mr-15 text-[14px] font-normal">
-        <button
+        <Link
+        href={data?.accessToken ? "/search" : "/login"}
         className="text-[var(--foreground)] hover:bg-[var(--chart1-primary)] hover:text-black py-1 px-3 rounded cursor-pointer">
             Buscar
-        </button>
+        </Link>
         <Link
         className="bg-[var(--primary)] text-black hover:brightness-90 py-1 px-3 rounded cursor-pointer"
         href={getDestination()}>
