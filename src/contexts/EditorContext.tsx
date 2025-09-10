@@ -40,7 +40,7 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
             return;
         }
 
-        if (title.length < 3) {
+        if (title.trim().length < 3) {
             setToastOpen(true)
             setToastType("error")
             setToastTitle("Título muito curto...")
@@ -52,7 +52,7 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
         try {
             const notesService = new NotesService();
             await notesService.createNote({
-                title,
+                title: title.trim(),
                 code: code,
                 language,
                 token: session.accessToken

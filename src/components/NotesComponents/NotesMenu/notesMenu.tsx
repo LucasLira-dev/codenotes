@@ -6,6 +6,8 @@ import { CiSettings } from "react-icons/ci";
 import { MdOutlineExitToApp } from "react-icons/md";
 import Link from 'next/link';
 
+import { signOut } from "next-auth/react";
+
 interface NotesMenuProps {
     onClose: () => void,
     isDesktop: boolean
@@ -42,7 +44,12 @@ export const NotesMenu = ({ onClose, isDesktop }: NotesMenuProps) => {
                     <div
                     className='flex gap-3 px-3 py-2 items-center hover:bg-[var(--chart2-secondary)] rounded'>
                         <FaPlus className="text-[var(--foreground)] " />
-                        <Link href="/editor" className="text-[var(--foreground)]">Editor</Link>
+                        <Link 
+                        href="/editor" 
+                        className="text-[var(--foreground)]"
+                        aria-label='Ir para página do editor'>
+                            Editor
+                        </Link>
                     </div>
                     
                 </div>
@@ -52,12 +59,22 @@ export const NotesMenu = ({ onClose, isDesktop }: NotesMenuProps) => {
                     <div
                     className='flex gap-3 px-3 py-2 items-center hover:bg-[var(--chart2-secondary)] rounded'>
                         <CiSettings className="text-[var(--foreground)]" />
-                        <Link href="/settings" className="text-[var(--foreground)]">Configurações</Link>
+                        <Link 
+                        href="/settings" 
+                        className="text-[var(--foreground)]
+                        "
+                        aria-label='Ir para página de configurações'>
+                            Configurações
+                        </Link>
                     </div>
                     <div
                     className='flex gap-3 items-center px-3 py-2 hover:bg-[var(--chart2-secondary)] rounded'>
                         <MdOutlineExitToApp className="text-[var(--foreground)]" />
-                        <Link href="/" className="text-[var(--foreground)]"> Sair </Link>
+                        <button 
+                        className="text-[var(--foreground)]"
+                        onClick={() => signOut()}
+                        aria-label='Sair'
+                        > Sair </button>
                     </div>
                 </div>
 

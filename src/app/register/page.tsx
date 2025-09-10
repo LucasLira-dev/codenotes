@@ -75,9 +75,9 @@ export default function RegisterPage() {
                     setIsLoading(true)
                     const form = e.currentTarget;
                     const formData = new FormData(form);
-                    const email = String(formData.get('email') ?? '');
-                    const password = String(formData.get('password') ?? '');
-                    const confirmPassword = String(formData.get('confirmPassword') ?? '');
+                    const email = String(formData.get('email') ?? '').trim();
+                    const password = String(formData.get('password') ?? '').trim();
+                    const confirmPassword = String(formData.get('confirmPassword') ?? '').trim();
 
                     if (!emailRegex.test(email)) {
                       setError("Digite um email válido.");

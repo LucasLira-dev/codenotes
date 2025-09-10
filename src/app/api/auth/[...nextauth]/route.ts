@@ -49,6 +49,8 @@ const authOptions: NextAuthOptions = {
       if (user) {
         token.accessToken = user.token;
         token.expiresAt = user.expiresAt;
+        token.refreshToken = user.refreshToken;
+        token.id = user.id;
         return token;
       }
 
@@ -71,6 +73,7 @@ const authOptions: NextAuthOptions = {
             token.accessToken = data.token;
             token.expiresAt = Date.now() + data.expiresIn * 1000;
             token.refreshToken = data.refreshToken || token.refreshToken; // atualizar se veio novo
+            token.id = data.userId ? String(data.userId) : token.id; // <-- mantém o id antigo se não vier novo
           } else {
             throw new Error("Invalid refresh response");
           }

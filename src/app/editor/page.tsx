@@ -16,7 +16,7 @@ export default function EditorPage() {
   const router = useRouter()
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (status === "unauthenticated" || !session?.accessToken) {
       router.push("/login")
     }
   }, [status, router, session?.accessToken])
@@ -24,11 +24,6 @@ export default function EditorPage() {
   if (status === "loading") {
     return <Loading />
   }
-
-  if (status === "unauthenticated" || !session?.accessToken) {
-    router.push("/login")
-  }
-
 
   return (
     <EditorProvider>
