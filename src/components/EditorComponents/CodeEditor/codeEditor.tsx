@@ -122,10 +122,8 @@ export const CodeEditor = () => {
                     <div 
                     className="flex items-center gap-4">
                         <Select
-                            onValueChange={(value) => {
-                                setLanguage(value)
-                            }}
-                            defaultValue="javascript">
+                        value={language}
+                        onValueChange={setLanguage}>
                             <SelectTrigger
                             className="gap-2 bg-[#0F172A]">
                                 <SelectValue placeholder="Select a language" />
