@@ -51,6 +51,7 @@ const authOptions: NextAuthOptions = {
         token.expiresAt = user.expiresAt;
         token.refreshToken = user.refreshToken;
         token.id = user.id;
+        token.email = user.email;
         return token;
       }
 
@@ -97,6 +98,7 @@ const authOptions: NextAuthOptions = {
       }
       session.accessToken = token.accessToken;
       session.expiresAt = token.expiresAt;
+      session.user.email = token.email;
       return session;
       },
   },
