@@ -19,7 +19,7 @@ export const SiteDescription = () => {
         <section
         className="flex flex-col justify-center items-center px-4 py-10 mt-10 max-w-4xl mx-auto">
             <p
-            className="bg-[var(--accent)] hover:brightness-90 rounded-full px-3 mb-4 text-[13px] font-normal text-black">
+            className="bg-[var(--accent)] hover:brightness-90 rounded-full px-3 mb-4 text-[13px] font-normal text-[var(--background)]">
                 Plataforma para Programadores
             </p>
             <h2
@@ -34,7 +34,7 @@ export const SiteDescription = () => {
             className="flex items-center gap-4">
                 <Link
                 href={getDestination()}
-                className="bg-[var(--primary)] text-black hover:brightness-90 py-1 px-3 rounded cursor-pointer">
+                className="bg-[var(--primary)] text-[var(--background)] hover:brightness-90 py-1 px-3 rounded cursor-pointer">
                     Começar agora
                 </Link>
                 <Link

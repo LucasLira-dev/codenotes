@@ -196,7 +196,7 @@ export const CodeEditor = () => {
                             {
                                 language==="javascript" && (
                                     <button
-                                    className="bg-[var(--primary)] text-black hover:brightness-90 py-1 px-3 rounded cursor-pointer flex items-center gap-2"
+                                    className="bg-[var(--primary)] text-[var(--background)] hover:brightness-90 py-1 px-3 rounded cursor-pointer flex items-center gap-2"
                                     onClick={() => { runCode(); setActiveTab("saida"); }}>
                                     <VscDebugStart className="mr-1" />
                                     Executar

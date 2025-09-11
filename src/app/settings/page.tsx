@@ -1,3 +1,5 @@
+'use client'
+
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -5,7 +7,30 @@ import { EmailSettings } from '@/components/SettingsComponents/EmailSettings/ema
 import { PasswordSettings } from '@/components/SettingsComponents/PasswordSettings/passwordSettings'
 import { DeleteAccount } from "@/components/SettingsComponents/DeleteAccount/deleteAccount";
 
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import Loading from "@/components/Loading/loading";
+
 export default function Settings(){
+
+    const { data: session, status } = useSession()
+    const router = useRouter();
+
+    useEffect(() => {
+      if (status === "unauthenticated") {
+          router.push("/login")
+        }
+      }, [status, router, session?.accessToken])
+
+    if (status === "loading") {
+        return <Loading />
+    }
+      
+    if (status === "unauthenticated" || !session?.accessToken) {
+        router.push("/login")
+    }
+
     return(
         <>
             <header

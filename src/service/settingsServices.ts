@@ -41,4 +41,21 @@ export class SettingsService {
 
         return await res.json();
     }
+
+    async deleteAccount(token: string){
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/deleteAccount`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!res.ok) {
+            const errorJson = await res.json();
+            throw new Error(errorJson.message || "Erro ao deletar conta");
+        }
+
+        return await res.json();
+    }
 }

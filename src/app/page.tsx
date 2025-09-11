@@ -31,7 +31,7 @@ export default function Home() {
               <h3 className="text-3xl font-bold text-[#0F172A] mb-4">Pronto para organizar seus estudos?</h3>
               <p className="text-lg text-[#382F23] mb-6 opacity-90">Comece a usar o CodeNotes agora mesmo</p>
               <Link
-                className="bg-[var(--secondary)] text-[#0F172A] rounded-md px-4 py-1 hover:brightness-90 "
+                className="bg-[var(--secondary)] text-[var(--background)] rounded-md px-4 py-1 hover:brightness-90 "
                 href={data ? "/editor" : "/login"}>
                 Começar a usar
               </Link>

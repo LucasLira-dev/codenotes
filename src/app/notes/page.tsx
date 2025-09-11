@@ -24,9 +24,9 @@ export default function Notes(){
   }, []);
 
   const { data: session, status } = useSession()
-    const router = useRouter()
+  const router = useRouter()
   
-    useEffect(() => {
+  useEffect(() => {
       if (status === "unauthenticated") {
         router.push("/login")
       }
