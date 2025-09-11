@@ -21,7 +21,7 @@ export const SearchInformations = () => {
         if (!session?.accessToken) return;
         setSearching(true)
         const notesService = new NotesService();
-        notesService.searchNotes(searchTerm, session.accessToken)
+        notesService.searchNotes(searchTerm.trim(), session.accessToken)
         .then(response => response.json())
         .then(data => {
             setNotes(data);
