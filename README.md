@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Codenotes
 
-## Getting Started
+Um site que te permite salvar anotações e blocos de código de forma simples e organizada.
 
-First, run the development server:
+## Sobre
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+O **Codenotes** foi criado para facilitar o armazenamento de notas técnicas, trechos de código e ideias, tornando mais fácil para desenvolvedores e estudantes acessarem e compartilharem conhecimento.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Homepage:** [codenotes-wheat.vercel.app](https://codenotes-wheat.vercel.app)
+- **Licença:** MIT
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Funcionalidades
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Salvar anotações personalizadas
+- Armazenar e organizar blocos de código
+- Interface intuitiva e responsiva
 
-## Learn More
+## Tecnologias
 
-To learn more about Next.js, take a look at the following resources:
+- **TypeScript**
+- (Adicione outras tecnologias utilizadas aqui, como React, Next.js, etc.)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contribuição
 
-## Deploy on Vercel
+Contribuições são bem-vindas! Sinta-se livre para abrir issues ou pull requests.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Autor
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[LucasLira-dev](https://github.com/LucasLira-dev)
