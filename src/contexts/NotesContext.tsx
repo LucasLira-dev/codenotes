@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useContext, useEffect } from 'react';
+import { createContext, useState, ReactNode, useContext, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react'
 import { NotesService } from '@/service/notesService'
 import { CustomToast } from '@/components/Toast/toast';
@@ -50,7 +50,7 @@ export const NotesProvider = ({ children }: NotesContextProps) => {
   }, [session?.accessToken]);
 
   // Função para editar nota
-  const updateNote = async (id: number, title: string, code: string) => {
+  const updateNote = useCallback(async (id: number, title: string, code: string) => {
     if (!session?.accessToken) return;
     const notesService = new NotesService();
     try {
@@ -73,10 +73,10 @@ export const NotesProvider = ({ children }: NotesContextProps) => {
       setToastDesc("Ocorreu um erro ao editar sua nota.");
       setToastOpen(true);
     }
-  };
+  }, [session?.accessToken, setNotes]);
 
   // Função para deletar nota
-  const deleteNote = async (id: number) => {
+  const deleteNote = useCallback(async (id: number) => {
     if (!session?.accessToken) return;
     const notesService = new NotesService();
     try {
@@ -93,7 +93,7 @@ export const NotesProvider = ({ children }: NotesContextProps) => {
       setToastDesc("Ocorreu um erro ao deletar sua nota.");
       setToastOpen(true);
     }
-  };
+  }, [session?.accessToken, setNotes]);
 
   return (
     <NotesContext.Provider value={{ notes, setNotes, updateNote, deleteNote }}>

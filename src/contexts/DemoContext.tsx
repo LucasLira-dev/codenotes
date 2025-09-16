@@ -1,4 +1,4 @@
-import { useContext, useState, ReactNode, createContext } from 'react'
+import { useContext, useState, ReactNode, createContext, useCallback } from 'react'
 import { CustomToast } from '@/components/Toast/toast';
 
 export interface Note {
@@ -40,7 +40,7 @@ export const DemoProvider = ({ children }: DemoProviderProps) => {
     const [toastTitle, setToastTitle] = useState("");
     const [toastDesc, setToastDesc] = useState("");
 
-    const saveNoteDemo = async () => {
+    const saveNoteDemo = useCallback(async () => {
 
         if (titleDemo.length < 3) {
             setToastOpen(true)
@@ -63,7 +63,7 @@ export const DemoProvider = ({ children }: DemoProviderProps) => {
                 resolve();
             }, 2000);
         });
-    };
+    }, [titleDemo, codeDemo, languageDemo]);
 
     return (
         <DemoContext.Provider value={{ titleDemo, setTitleDemo, codeDemo, setCodeDemo, languageDemo, setLanguageDemo, saveNoteDemo, savingDemo, notes, setNotes}}>

@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useContext } from 'react';
+import { createContext, useState, ReactNode, useContext, useCallback } from 'react';
 import { useSession } from 'next-auth/react'
 import { NotesService } from '@/service/notesService'
 import { CustomToast } from '@/components/Toast/toast';
@@ -34,7 +34,7 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
 
     const { data: session } = useSession();
 
-    const saveNote = async () => {
+    const saveNote = useCallback(async () => {
         if (!session?.accessToken) {
             console.error("Usuário não autenticado");
             return;
@@ -70,7 +70,7 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
         } finally {
             setSaving(false);
         }
-    };
+    }, [title, code, language, session?.accessToken]);
 
     return (
         <EditorContext.Provider value={{ title, setTitle, code, setCode, language, setLanguage, saveNote, saving }}>
