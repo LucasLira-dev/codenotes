@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogPortal, DialogOverlay, DialogContent, DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
-import {Highlight, themes} from "prism-react-renderer";
 
 interface Note {
   id: number;
@@ -39,8 +38,7 @@ export const NotesModal = ({
       <DialogPortal>
         <DialogOverlay className="fixed inset-0 bg-black/40 z-50" />
         <DialogContent
-
-        className="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 bg-[var(--card)] text-[var(--foreground)] rounded-lg shadow-lg p-6 min-w-[320px] max-w-[90vw]">
+        className="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 bg-[var(--card)] text-[var(--foreground)] rounded-lg shadow-lg p-6 w-full min-w-[320px] max-w-[90vw] max-h-[90vh] overflow-y-auto flex flex-col">
           {action === "edit" && note ? (
             <form
               onSubmit={e => {
@@ -70,32 +68,10 @@ export const NotesModal = ({
               <textarea
                 value={editCode}
                 onChange={e => setEditCode(e.target.value)}
-                className="border rounded px-3 py-2 font-mono w-full min-h-[120px] mb-2"
+                className="border rounded px-3 py-2 font-mono w-full min-h-[240px] h-[320px] mb-2"
                 required
               />
-              <div>
-                <span className="text-xs text-gray-500">Visualização:</span>
-                <Highlight
-                  code={editCode}
-                  language={note.language || "javascript"}
-                  theme={themes.dracula}
-                >
-                  {({ className, style, tokens, getLineProps, getTokenProps }) => (
-                    <pre
-                      className={`rounded-md p-4 text-sm font-mono overflow-x-auto mb-2 ${className}`}
-                      style={style}
-                    >
-                      {tokens.map((line, i) => (
-                        <div key={i} {...getLineProps({ line })}>
-                          {line.map((token, key) => (
-                            <span key={key} {...getTokenProps({ token })} />
-                          ))}
-                        </div>
-                      ))}
-                    </pre>
-                  )}
-                </Highlight>
-              </div>
+
               <div className="flex justify-end gap-2 mt-2">
                 <button
                   type="button"
