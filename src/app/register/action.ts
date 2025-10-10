@@ -16,9 +16,11 @@ export default async function CadastrarUsuario({ userEmail, userPassword }: { us
 
   const data = await res.json();
   
-  // Se o registro foi bem-sucedido e retornou token
-  if (res.ok && data.token && data.expiresIn) {
-    // Fazer login automático usando as mesmas credenciais
+  if (!res.ok) {
+    throw new Error(data.message || "Email já está em uso ou erro no registro");
+  }
+  
+  if (data.token && data.expiresIn) {
     const loginResult = await signIn("credentials", {
       email: userEmail,
       password: userPassword,
@@ -32,5 +34,6 @@ export default async function CadastrarUsuario({ userEmail, userPassword }: { us
     };
   }
   
-  return { success: false, error: data.message || "Erro no registro" };
+  // Caso de sucesso mas sem token (não deveria acontecer)
+  throw new Error("Registro realizado mas token não recebido");
 }
