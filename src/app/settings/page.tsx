@@ -26,10 +26,6 @@ export default function Settings(){
     if (status === "loading") {
         return <Loading />
     }
-      
-    if (status === "unauthenticated" || !session?.accessToken) {
-        router.push("/login")
-    }
 
     return(
         <>

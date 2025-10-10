@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MdOutlineEmail } from "react-icons/md";
 
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 
 import { useState } from "react";
 import { SettingsService } from "@/service/settingsServices";
@@ -19,11 +19,19 @@ export const EmailSettings = () => {
     const [toastDesc, setToastDesc] = useState("");
 
     const [email, setEmail] = useState<string | null | undefined>(session?.user.email);
+    const [password, setPassword] = useState("");
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     const handleUpdateEmail = async () => {
         if (!email || email === session?.user.email) return;
+        if (!password) {
+            setToastOpen(true);
+            setToastType("error");
+            setToastTitle("Senha obrigatória");
+            setToastDesc("Digite sua senha para confirmar a alteração.");
+            return;
+        }
 
         if (!emailRegex.test(email)) {
             setToastOpen(true);
@@ -34,36 +42,54 @@ export const EmailSettings = () => {
         }
 
         try {
-            setIsLoading(true);
-            const settingsService = new SettingsService();
-            if (session?.accessToken && email) {
-                await settingsService.updateEmail(session.accessToken, email);
+          setIsLoading(true);
+          const settingsService = new SettingsService();
+          if (session?.accessToken && email && password) {
+            // Chama a API para atualizar o email
+            await settingsService.updateEmail(
+              session.accessToken,
+              email,
+              password
+            );
 
-                // if (result.token){
-                //     await signIn("credentials", { email, token: result.token, redirect: false });
-                // }
-                
-                setEmail(email);
-                setIsLoading(false);
-                setToastOpen(true)
-                setToastType("success")
-                setToastTitle("Email atualizado!")
-                setToastDesc("Seu email foi atualizado com sucesso.")
-            } else {
-                setIsLoading(false);
-                throw new Error("No access token or email");
+            // Agora, tenta relogar para atualizar session
+            const signInResult = await signIn("credentials", {
+              email,
+              password,
+              redirect: false,
+            });
+
+            if (signInResult?.error) {
+              setToastOpen(true);
+              setToastType("error");
+              setToastTitle("Erro ao fazer login");
+              setToastDesc(
+                "O e-mail foi alterado, mas não foi possível atualizar sua sessão. Faça login novamente."
+              );
+              setIsLoading(false);
+              return;
             }
-        } catch (error) {
-            console.error("Erro ao atualizar email:", error);
+
             setToastOpen(true);
-            setToastType("error");
-            setToastTitle("Erro ao atualizar email");
-            setToastDesc("Ocorreu um erro ao atualizar seu email.");
-            setIsLoading(false);
+            setToastType("success");
+            setToastTitle("Email atualizado!");
+            setToastDesc("Seu email foi atualizado com sucesso.");
+            setPassword("");
+          } else {
+            throw new Error("No access token, email ou senha");
+          }
+        } catch (error) {
+          setToastOpen(true);
+          setToastType("error");
+          setToastTitle("Erro ao atualizar email");
+          setToastDesc("Senha incorreta ou erro ao atualizar seu email.");
+          console.error("Erro ao atualizar email:", error);
+          console.log(password);
+        } finally {
+          setIsLoading(false);
         }
-    };
 
-
+    }
 
     return(
         <section
@@ -109,9 +135,30 @@ export const EmailSettings = () => {
                 />
             </div>
 
+            <div className="space-y-2">
+                <Label 
+                htmlFor="password"
+                className="text-[var(--foreground)]"
+                >
+                    Senha atual
+                </Label>
+                <Input
+                id="password"
+                name="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Digite sua senha atual"
+                className="bg-[var(--input)] border-[var(--border)] text-[var(--foreground)]"
+                />
+                <p className="text-xs text-[var(--muted-foreground)]">
+                    Digite sua senha para confirmar a alteração do email
+                </p>
+            </div>
+
             <button
-            className="px-4 py-2 bg-[var(--primary)] text-[var(--background)] rounded-md hover:bg-[var(--secondary)] transition max-w-[180px] cursor-pointer font-semibold"
-            disabled={!email || email === session?.user.email}
+            className="px-4 py-2 bg-[var(--primary)] text-[var(--background)] rounded-md hover:bg-[var(--secondary)] transition max-w-[180px] cursor-pointer font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!email || email === session?.user.email || !password || isLoading}
             aria-label="Atualizar email"
             onClick={handleUpdateEmail}>
                 {isLoading ? 'Atualizando...' : 'Atualizar email'}

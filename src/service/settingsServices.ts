@@ -1,7 +1,7 @@
 
 export class SettingsService {
 
-    async updateEmail(token: string, newEmail: string) {
+    async updateEmail(token: string, newEmail: string, password: string) {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/updateEmail`, {
             method: "PATCH",
             headers: {
@@ -9,15 +9,18 @@ export class SettingsService {
                 "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
-                email: newEmail
+                email: newEmail,
+                password: password
             })
         });
 
+        const data = await res.json();
+
         if (!res.ok) {
-            throw new Error("Erro ao atualizar email");
+            throw new Error(data.message || "Erro ao atualizar email");
         }
 
-        return await res.json();
+        return data
     }
 
     async updatePassword(token: string, currentPassword: string, newPassword: string) {
