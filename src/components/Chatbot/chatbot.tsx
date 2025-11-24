@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { chatbotService } from "@/service/chatbotService";
-import { AiOutlineLoading } from "react-icons/ai";
+// import { AiOutlineLoading } from "react-icons/ai";
 
 
 export const Chatbot = () => {
@@ -54,17 +54,16 @@ export const Chatbot = () => {
     .catch((error) => {
       console.error("Error getting AI response:", error); 
       // setIsLoading(false);
-    });
-    }
-    catch (error) {
-      // setIsLoading(false);
-      console.error("Error sending message:", error);
       setAIMessage("Desculpe, ocorreu um erro ao obter a resposta.");
       setMessages((prevMessages)=> [
         ...prevMessages,
         { role: "bot", content: "Desculpe, ocorreu um erro ao obter a resposta." }
       ])
-      console.error(error);
+    });
+    }
+    catch (error) {
+      // setIsLoading(false);
+      console.error("Error sending message:", error);
     }
     
   }
