@@ -5,6 +5,7 @@ import { CodeEditorDemo } from '@/components/DemoComponents/CodeEditorDemo/codeE
 import { TitleInputDemo } from '@/components/DemoComponents/TitleInputDemo/titleInputDemo'
 import { Notes } from '@/components/DemoComponents/Notes/notes'
 import { DemoProvider} from '@/contexts/DemoContext'
+import { Chatbot } from '@/components/Chatbot/chatbot'
 
 export default function EditorPage() {
 
@@ -14,6 +15,7 @@ export default function EditorPage() {
        />
       <main
       className='bg-[var(--background)] flex flex-col justify-center items-center min-h-screen w-full'>
+        <Chatbot />
         <section
         className="container mx-auto flex flex-col md:max-w-[1000px] px-4 py-16 gap-4">
           <article>

@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import Loading from "@/components/Loading/loading";
+import { Chatbot } from "@/components/Chatbot/chatbot";
 
 export default function Settings(){
 
@@ -51,7 +52,8 @@ export default function Settings(){
                 </div>
             </header>
             <main className="flex flex-col items-center min-h-screen p-4 bg-[var(--background)] gap-4">
-                 <div className="flex flex-col w-full gap-4 md:max-w-5xl">
+                <Chatbot />
+                <div className="flex flex-col w-full gap-4 md:max-w-5xl">
                     <EmailSettings />
                     <PasswordSettings />
                     <DeleteAccount />

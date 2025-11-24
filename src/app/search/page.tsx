@@ -1,5 +1,6 @@
 'use client'
 
+import { Chatbot } from "@/components/Chatbot/chatbot";
 import Loading from "@/components/Loading/loading";
 import { SearchInformations } from "@/components/SearchComponents/SearchInformations/searchInformations";
 import { ArrowLeft } from "lucide-react";
@@ -47,6 +48,7 @@ export default function Search() {
           </div>
         </header>
         <main className="bg-[var(--background)] flex flex-col  items-center min-h-screen w-full">
+          <Chatbot />
             <section className=" flex flex-col items-center w-full md:max-w-[1400px] px-4 py-16 gap-4">
                 <article>
                 <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">

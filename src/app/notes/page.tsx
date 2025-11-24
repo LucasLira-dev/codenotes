@@ -1,5 +1,6 @@
 'use client'
 
+import { Chatbot } from "@/components/Chatbot/chatbot";
 import Loading from "@/components/Loading/loading";
 import  NoteInformations from "@/components/NotesComponents/NoteInformations/noteInformations"
 import { NotesMenu } from "@/components/NotesComponents/NotesMenu/notesMenu";
@@ -97,6 +98,7 @@ export default function Notes(){
           </Link>
         </header>
         <main className="bg-[var(--background)] min-h-screen">
+          <Chatbot />
           <NoteInformations />
         </main>
       </div>

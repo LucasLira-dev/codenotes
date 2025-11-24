@@ -9,6 +9,7 @@ import Loading from "@/components/Loading/loading"
 import { useSession } from "next-auth/react";
 
 import Link from "next/link";
+import { Chatbot } from "@/components/Chatbot/chatbot";
 
 
 export default function Home() {
@@ -23,6 +24,7 @@ export default function Home() {
     <>
       <Header />
       <main className="bg-[var(--background)] flex flex-col justify-center items-center">
+        <Chatbot />
         <SiteDescription />
         <MainFeatures />
         <section className="container mx-auto px-4 py-16">
