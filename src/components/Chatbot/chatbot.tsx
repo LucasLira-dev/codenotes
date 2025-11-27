@@ -3,30 +3,34 @@
 import { useState, useEffect, useRef } from "react";
 import { MessageCircle, X, Send, Bot, User } from "lucide-react";
 import { Button } from "../ui/button";
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { chatbotService } from "@/service/chatbotService";
 // import { AiOutlineLoading } from "react-icons/ai";
-
 
 export const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [humanMessage, setHumanMessage] = useState("");
   const [AIMessage, setAIMessage] = useState("");
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const [messages, setMessages] = useState<{ role: "user" | "bot"; content: string }[]>([
-    { role: "bot", content: "Olá! Como posso ajudar você hoje?" }
-  ]);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [messages, setMessages] = useState<
+    { role: "user" | "bot"; content: string }[]
+  >([{ role: "bot", content: "Olá! Como posso ajudar você hoje?" }]);
   // const [isLoading, setIsLoading] = useState(false);
-    
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth" })
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [humanMessage, AIMessage, isOpen])
+  }, [humanMessage, AIMessage, isOpen]);
 
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,37 +40,37 @@ export const Chatbot = () => {
     try {
       // setIsLoading(true);
       setHumanMessage(inputValue);
-      setMessages((prevMessages)=> [
-      ...prevMessages,
-      { role: "user", content: inputValue }
-    ])
-    setInputValue("");
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: "user", content: inputValue },
+      ]);
+      setInputValue("");
 
-    const AIResponse = chatbotService.getAIResponse(inputValue);
-    AIResponse.then((response) => {
-      setAIMessage(response);
-      setMessages((prevMessages)=> [
-        ...prevMessages,
-        { role: "bot", content: response }
-      ])
-      // setIsLoading(false);
-    })
-    .catch((error) => {
-      console.error("Error getting AI response:", error); 
-      // setIsLoading(false);
-      setAIMessage("Desculpe, ocorreu um erro ao obter a resposta.");
-      setMessages((prevMessages)=> [
-        ...prevMessages,
-        { role: "bot", content: "Desculpe, ocorreu um erro ao obter a resposta." }
-      ])
-    });
-    }
-    catch (error) {
+      const AIResponse = chatbotService.getAIResponse(inputValue);
+      AIResponse.then((response) => {
+        setAIMessage(response);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { role: "bot", content: response },
+        ]);
+        // setIsLoading(false);
+      }).catch((error) => {
+        console.error("Error getting AI response:", error);
+        // setIsLoading(false);
+        setAIMessage("Desculpe, ocorreu um erro ao obter a resposta.");
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            role: "bot",
+            content: "Desculpe, ocorreu um erro ao obter a resposta.",
+          },
+        ]);
+      });
+    } catch (error) {
       // setIsLoading(false);
       console.error("Error sending message:", error);
     }
-    
-  }
+  };
 
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-4">
@@ -94,7 +98,9 @@ export const Chatbot = () => {
                   key={index}
                   className={cn(
                     "flex max-w-[80%] gap-2",
-                    msg.role === "user" ? "ml-auto flex-row-reverse" : "mr-auto"
+                    msg.role === "user"
+                      ? "ml-auto flex-row-reverse"
+                      : "mr-auto",
                   )}
                 >
                   <div
@@ -102,7 +108,7 @@ export const Chatbot = () => {
                       "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
                       msg.role === "user"
                         ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
-                        : "bg-[var(--muted)] text-[var(--muted-foreground)]"
+                        : "bg-[var(--muted)] text-[var(--muted-foreground)]",
                     )}
                   >
                     {msg.role === "user" ? (
@@ -116,7 +122,7 @@ export const Chatbot = () => {
                       "rounded-lg p-3 text-sm",
                       msg.role === "user"
                         ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
-                        : "bg-[var(--muted)] text-[var(--muted-foreground)]"
+                        : "bg-[var(--muted)] text-[var(--muted-foreground)]",
                     )}
                   >
                     {msg.content}
@@ -133,9 +139,15 @@ export const Chatbot = () => {
                 placeholder="Digite sua dúvida..."
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
+                ref={inputRef}
                 className="flex-1 text-[var(--foreground)] "
               />
-              <Button type="submit" size="icon" className="text-[var(--foreground)] cursor-pointer" disabled={!inputValue.trim()}>
+              <Button
+                type="submit"
+                size="icon"
+                className="text-[var(--foreground)] cursor-pointer"
+                disabled={!inputValue.trim()}
+              >
                 <Send className="h-4 w-4 text-[var(--foreground)] cursor-pointer" />
               </Button>
             </form>
