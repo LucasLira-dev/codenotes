@@ -47,9 +47,9 @@ export default function Search() {
             <span className="text-[var(--foreground)]">CodeNotes</span>
           </div>
         </header>
-        <main className="bg-[var(--background)] flex flex-col  items-center min-h-screen w-full">
+        <main className="bg-[var(--background)] flex flex-col items-center min-h-screen w-full max-w-[1000px] mx-auto px-4">
           <Chatbot />
-            <section className=" flex flex-col items-center w-full md:max-w-[1400px] px-4 py-16 gap-4">
+          <section className="flex flex-col items-center w-full py-16 gap-4">
                 <article>
                 <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">
                     Buscar Anotações
