@@ -30,7 +30,8 @@ export default function Search() {
     }
 
     return (
-      <>
+      <div
+      className="bg-[var(--background)] min-h-screen w-full flex flex-col">
         <header className="flex gap-3 md:gap-1 bg-[var(--header)] items-center p-4 border-b-1 border-b-[var(--border)]">
           <div>
             <Link
@@ -62,6 +63,6 @@ export default function Search() {
                 />  
             </section>
         </main>
-      </>
+      </div>
     );
 }
