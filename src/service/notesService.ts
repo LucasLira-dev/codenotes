@@ -2,30 +2,28 @@ interface CreateNoteData {
     title: string;
     code: string;
     language: string;
-    token: string;
 }
 
 interface UpdateNoteData {
     title: string;
     code: string;
     language: string;
-    token: string;
 }
 
 export class NotesService {
 
     async createNote(data: CreateNoteData) {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/note`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${data.token}`
             },
             body: JSON.stringify({
                 title: data.title,
                 code: data.code,
                 language: data.language
-            })
+            }),
+            credentials: "include",
         });
 
         if (!res.ok) {
@@ -35,12 +33,10 @@ export class NotesService {
         return await res.json();
     }
 
-    async getNotes(token: string) {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/my-notes`, {
+    async getNotes() {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
             method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+            credentials: "include",
         });
 
         if (!res.ok) {
@@ -50,15 +46,14 @@ export class NotesService {
         return await res.json();
     }
 
-    async editNote(id: number, data: Partial<UpdateNoteData>) {
-        const {token, ...fields} = data
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/${id}`, {
+    async editNote(id: string, data: Partial<UpdateNoteData>) {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify(fields)
+            body: JSON.stringify(data),
+            credentials: "include",
         });
 
         if (!res.ok) {
@@ -68,21 +63,17 @@ export class NotesService {
         return await res.json();
     }
 
-    deleteNote(id: number, token: string) {
-        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/${id}`, {
+    deleteNote(id: string) {
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/${id}`, {
             method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+            credentials: "include",
         });
     }
 
-    searchNotes(query: string, token: string) {
+    searchNotes(query: string) {
         return fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/search/${encodeURIComponent(query)}`, {
             method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+            credentials: "include",
         });
     }
 }

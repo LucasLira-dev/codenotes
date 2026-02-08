@@ -5,7 +5,7 @@ import Loading from "@/components/Loading/loading";
 import  NoteInformations from "@/components/NotesComponents/NoteInformations/noteInformations"
 import { NotesMenu } from "@/components/NotesComponents/NotesMenu/notesMenu";
 import { NotesProvider } from "@/contexts/NotesContext";
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -24,20 +24,20 @@ export default function Notes(){
     return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
-  const { data: session, status } = useSession()
+  const { data: session, isPending } = authClient.useSession()
   const router = useRouter()
   
   useEffect(() => {
-      if (status === "unauthenticated") {
+      if (!isPending && !session) {
         router.push("/login")
       }
-    }, [status, router, session?.accessToken])
+    }, [isPending, router, session])
   
-    if (status === "loading") {
+    if (isPending) {
       return <Loading />
     }
   
-    if (status === "unauthenticated" || !session?.accessToken) {
+    if (!session) {
       router.push("/login")
     }
 

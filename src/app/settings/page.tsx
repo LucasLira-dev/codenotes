@@ -8,23 +8,23 @@ import { PasswordSettings } from '@/components/SettingsComponents/PasswordSettin
 import { DeleteAccount } from "@/components/SettingsComponents/DeleteAccount/deleteAccount";
 
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import { useEffect } from "react";
 import Loading from "@/components/Loading/loading";
 import { Chatbot } from "@/components/Chatbot/chatbot";
 
 export default function Settings(){
 
-    const { data: session, status } = useSession()
+    const { data: session, isPending } = authClient.useSession()
     const router = useRouter();
 
     useEffect(() => {
-      if (status === "unauthenticated") {
+      if (!isPending && !session) {
           router.push("/login")
         }
-      }, [status, router, session?.accessToken])
+      }, [isPending, router, session])
 
-    if (status === "loading") {
+    if (isPending) {
         return <Loading />
     }
 

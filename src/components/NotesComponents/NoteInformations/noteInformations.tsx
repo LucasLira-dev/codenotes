@@ -1,5 +1,4 @@
 'use client'
-import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { FileText, Code2} from "lucide-react"
@@ -13,8 +12,7 @@ import Loading from "@/components/Loading/loading"
 
 export default function NoteInformations() {
 
-    const { notes } = useNotes()
-    const [loading, setLoading] = useState(true)
+    const { notes, isLoading } = useNotes()
 
     // Calcula linguagem mais usada
     const languageCounts: Record<string, number> = {};
@@ -34,13 +32,7 @@ export default function NoteInformations() {
         return created >= weekAgo
     }).length
 
-
-    useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 3000)
-        return () => clearTimeout(timer)
-    }, [])
-
-    if (loading) {
+    if (isLoading) {
         return <Loading />
     }
 

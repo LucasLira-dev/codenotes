@@ -1,19 +1,16 @@
 'use client'
 
 import { FaCode } from "react-icons/fa";
-import { useSession } from 'next-auth/react'
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 
 export const Header = () => {
 
-  const { data, status } = useSession();
+  const { data, isPending } = authClient.useSession();
 
-  // Função para determinar o destino do botão
   const getDestination = () => {
-    if (status === "loading") return "/login"; // Enquanto carrega
-    if (status === "unauthenticated") return "/login"; // Não logado
-    if (data?.accessToken) return "/editor"; // Logado com token válido
-    return "/login"; // Logado mas sem token (expirado)
+    if (isPending) return "/login";
+    return data ? "/editor" : "/login";
   };
 
   return (
@@ -32,7 +29,7 @@ export const Header = () => {
       <div
       className="flex gap-3 sm:ml-10 sm:mr-10 md:ml-15 md:mr-15 text-[14px] font-normal">
         <Link
-        href={data?.accessToken ? "/search" : "/login"}
+        href={data ? "/search" : "/login"}
         className="text-[var(--foreground)] hover:bg-[var(--chart1-primary)] hover:text-[var(--background)] py-1 px-3 rounded cursor-pointer">
             Buscar
         </Link>

@@ -1,17 +1,16 @@
-
 export class SettingsService {
 
-    async updateEmail(token: string, newEmail: string, password: string) {
+    async updateEmail(newEmail: string, password: string) {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/updateEmail`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
                 email: newEmail,
                 password: password
-            })
+            }),
+            credentials: "include",
         });
 
         const data = await res.json();
@@ -23,18 +22,17 @@ export class SettingsService {
         return data
     }
 
-    async updatePassword(token: string, currentPassword: string, newPassword: string) {
-        console.log("enviando para api:", {token, currentPassword, newPassword });
+    async updatePassword(currentPassword: string, newPassword: string) {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/updatePassword`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
                 currentPassword,
                 newPassword
-            })
+            }),
+            credentials: "include",
         });
 
         if (!res.ok) {
@@ -45,13 +43,13 @@ export class SettingsService {
         return await res.json();
     }
 
-    async deleteAccount(token: string){
+    async deleteAccount(){
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/deleteAccount`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            }
+            },
+            credentials: "include",
         });
 
         if (!res.ok) {

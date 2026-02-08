@@ -19,8 +19,9 @@ import Link from "next/link";
 
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
-import { signIn, useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import Loading from "@/components/Loading/loading";
+import SocialLoginButtons from "@/components/AuthComponents/SocialLoginButtons/socialLoginButtons";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,15 +32,15 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const { data: session, status } = useSession();
+  const { data: session, isPending } = authClient.useSession();
 
   useEffect(() => {
-    if (status === "authenticated" && session?.accessToken) {
+    if (!isPending && session) {
       router.push("/");
     }
-  }, [status, router, session?.accessToken]);
+  }, [isPending, router, session]);
 
-  if (status === "loading") {
+  if (isPending) {
     return <Loading />;
   }
 
@@ -49,17 +50,14 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // Login via NextAuth
-      const result = await signIn("credentials", {
+      const { error: signInError } = await authClient.signIn.email({
         email,
         password,
-        redirect: false,
-        callbackUrl: "/editor",
       });
 
-      if (result?.error) {
+      if (signInError) {
         setError("Email ou senha inválidos");
-      } else if (result?.ok || result?.url) {
+      } else {
         router.push("/editor");
       }
     } catch (err) {
@@ -112,6 +110,19 @@ export default function LoginPage() {
                 {error}
               </div>
             )}
+
+            <SocialLoginButtons />
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-[var(--border)]" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-[var(--card)] px-2 text-[var(--muted-foreground)]">
+                  ou continue com email
+                </span>
+              </div>
+            </div>
 
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">

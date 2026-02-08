@@ -6,7 +6,7 @@ import { CiSettings } from "react-icons/ci";
 import { MdOutlineExitToApp } from "react-icons/md";
 import Link from 'next/link';
 
-import { signOut } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 
 interface NotesMenuProps {
     onClose: () => void,
@@ -72,7 +72,7 @@ export const NotesMenu = ({ onClose, isDesktop }: NotesMenuProps) => {
                         <MdOutlineExitToApp className="text-[var(--foreground)]" />
                         <button 
                         className="text-[var(--foreground)]"
-                        onClick={() => signOut()}
+                        onClick={() => authClient.signOut()}
                         aria-label='Sair'
                         > Sair </button>
                     </div>

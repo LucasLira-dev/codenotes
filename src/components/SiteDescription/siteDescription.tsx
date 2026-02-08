@@ -1,18 +1,15 @@
 'use client'
 
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link"
 
 export const SiteDescription = () => {
 
-    const { data, status } = useSession();
+    const { data, isPending } = authClient.useSession();
     
-    // Função para determinar o destino do botão
     const getDestination = () => {
-        if (status === "loading") return "/login"; // Enquanto carrega
-        if (status === "unauthenticated") return "/login"; // Não logado
-        if (data?.accessToken) return "/editor"; // Logado com token válido
-        return "/login"; // Logado mas sem token (expirado)
+        if (isPending) return "/login";
+        return data ? "/editor" : "/login";
       };
 
     return(

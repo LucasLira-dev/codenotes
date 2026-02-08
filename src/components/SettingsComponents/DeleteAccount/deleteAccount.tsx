@@ -5,24 +5,24 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { useState } from "react";
 import { DeleteAccountModal } from "../DeleteAccountModal/deleteAccountModal";
 import { SettingsService } from "@/service/settingsServices";
-import { useSession, signOut, } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
 export const DeleteAccount = () => {
 
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { data: session } = useSession();
+    const { data: session } = authClient.useSession();
     const router = useRouter();
 
     const handleDeleteAccount = async () => {
         setIsLoading(true);
-        if (!session?.accessToken) return;
+        if (!session) return;
 
         try {
             const settingsService = new SettingsService();
-            await settingsService.deleteAccount(session?.accessToken);
-            await signOut({ redirect: false });
+            await settingsService.deleteAccount();
+            await authClient.signOut();
             router.push("/login");
             setIsLoading(false);
         }

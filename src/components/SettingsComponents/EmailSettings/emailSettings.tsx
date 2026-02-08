@@ -4,27 +4,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MdOutlineEmail } from "react-icons/md";
 
-import { useSession, signIn } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 
 import { useState } from "react";
 import { SettingsService } from "@/service/settingsServices";
 import { CustomToast } from '@/components/Toast/toast';
 
 export const EmailSettings = () => {
-    const { data: session } = useSession();
+    const { data: session } = authClient.useSession();
     const [isLoading, setIsLoading] = useState(false);
     const [toastOpen, setToastOpen] = useState(false);
     const [toastType, setToastType] = useState<"success" | "error">("success");
     const [toastTitle, setToastTitle] = useState("");
     const [toastDesc, setToastDesc] = useState("");
 
-    const [email, setEmail] = useState<string | null | undefined>(session?.user.email);
+    const [email, setEmail] = useState<string | null | undefined>(session?.user?.email);
     const [password, setPassword] = useState("");
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     const handleUpdateEmail = async () => {
-        if (!email || email === session?.user.email) return;
+        if (!email || email === session?.user?.email) return;
         if (!password) {
             setToastOpen(true);
             setToastType("error");
@@ -44,22 +44,15 @@ export const EmailSettings = () => {
         try {
           setIsLoading(true);
           const settingsService = new SettingsService();
-          if (session?.accessToken && email && password) {
-            // Chama a API para atualizar o email
-            await settingsService.updateEmail(
-              session.accessToken,
-              email,
-              password
-            );
+          if (email && password) {
+            await settingsService.updateEmail(email, password);
 
-            // Agora, tenta relogar para atualizar session
-            const signInResult = await signIn("credentials", {
+            const { error: signInError } = await authClient.signIn.email({
               email,
               password,
-              redirect: false,
             });
 
-            if (signInResult?.error) {
+            if (signInError) {
               setToastOpen(true);
               setToastType("error");
               setToastTitle("Erro ao fazer login");
@@ -76,7 +69,7 @@ export const EmailSettings = () => {
             setToastDesc("Seu email foi atualizado com sucesso.");
             setPassword("");
           } else {
-            throw new Error("No access token, email ou senha");
+            throw new Error("Email ou senha não fornecidos");
           }
         } catch (error) {
           setToastOpen(true);
@@ -158,7 +151,7 @@ export const EmailSettings = () => {
 
             <button
             className="px-4 py-2 bg-[var(--primary)] text-[var(--background)] rounded-md hover:bg-[var(--secondary)] transition max-w-[180px] cursor-pointer font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!email || email === session?.user.email || !password || isLoading}
+            disabled={!email || email === session?.user?.email || !password || isLoading}
             aria-label="Atualizar email"
             onClick={handleUpdateEmail}>
                 {isLoading ? 'Atualizando...' : 'Atualizar email'}

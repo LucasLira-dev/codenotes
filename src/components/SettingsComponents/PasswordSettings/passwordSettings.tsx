@@ -6,14 +6,14 @@ import { useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { LuKey } from "react-icons/lu";
 
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 
 import { CustomToast } from "@/components/Toast/toast";
 import { SettingsService } from "@/service/settingsServices";
 
 export const PasswordSettings = () => {
 
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -53,8 +53,8 @@ export const PasswordSettings = () => {
     try {
       setIsLoading(true);
       const settingsService = new SettingsService();
-      if (session?.accessToken) {
-          await settingsService.updatePassword(session.accessToken, currentPassword, newPassword);
+      if (session) {
+          await settingsService.updatePassword(currentPassword, newPassword);
           setIsLoading(false);
           setToastOpen(true)
           setToastType("success")
