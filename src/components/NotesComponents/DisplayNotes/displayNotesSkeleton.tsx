@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
-export const PublicNotesSkeleton = () => {
+export const DisplayNotesSkeleton = () => {
   return (
     <article className="flex flex-col gap-4">
       {[1, 2, 3].map((index) => (

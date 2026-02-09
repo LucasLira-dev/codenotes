@@ -17,6 +17,8 @@ import {
   usePublicNotesQuery,
   PublicNote,
   useAddFavoriteMutation,
+  useMyFavoritesQuery,
+  FavoriteNote,
 } from "@/hooks/notes";
 
 export type { Note };
@@ -24,6 +26,9 @@ export type { Note };
 export interface NotesContextType {
   notes: Note[];
   publicNotes: PublicNote[];
+  favoritesNotes: FavoriteNote[];
+  isFavoritesLoading: boolean;
+  isFavoritesError: boolean;
   isPublicLoading: boolean;
   isPublicError: boolean; 
   isLoading: boolean;
@@ -48,6 +53,7 @@ export function NotesProvider({ children }: NotesProviderProps) {
 
   const { data: notes = [], isLoading, isError } = useNotesQuery();
   const { data: publicNotes = [], isLoading: isPublicLoading, isError: isPublicError } = usePublicNotesQuery();
+  const { data: favoritesNotes = [], isLoading: isFavoritesLoading, isError: isFavoritesError } = useMyFavoritesQuery();
   
   const updateMutation = useUpdateNoteMutation();
   const deleteMutation = useDeleteNoteMutation();
@@ -129,7 +135,7 @@ export function NotesProvider({ children }: NotesProviderProps) {
   )
 
   return (
-    <NotesContext.Provider value={{ notes, isLoading, isError, updateNote, deleteNote, togglePublic, publicNotes, isPublicLoading, isPublicError, addFavorite }}>
+    <NotesContext.Provider value={{ notes, isLoading, isError, updateNote, deleteNote, togglePublic, publicNotes, isPublicLoading, isPublicError, addFavorite, favoritesNotes, isFavoritesLoading, isFavoritesError }}>
         {children}
       <CustomToast
         open={toastOpen}

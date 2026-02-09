@@ -3,14 +3,14 @@
 import { useNotes } from "@/contexts/NotesContext";
 import { DisplayNotes } from "../DisplayNotes/displayNotes"
 
-export const PublicNotes = () => {
+export const FavoritesNotes = () => {
 
-    const { isPublicLoading } = useNotes();
+    const { isFavoritesLoading } = useNotes();
 
     return (
         <DisplayNotes
-        notesType="public"
-        isLoading={isPublicLoading}
+        notesType="favorites"
+        isLoading={isFavoritesLoading}
          />
     )
 }

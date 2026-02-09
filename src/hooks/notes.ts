@@ -32,6 +32,27 @@ export interface PublicNote {
   isFavorited: boolean;
 }
 
+export interface FavoriteNote {
+  id: string;
+  notedId: string;
+  note: {
+    id: string;
+    title: string;
+    code: string;
+    language: string;
+    isPublic: boolean;
+    createdAt: string;
+    updatedAt: string;
+    authorId: string;
+    author: {
+      id: string;
+      name: string;
+      image: string | null;
+    };
+  isFavorited: boolean;
+  }
+}
+
 export function useNotesQuery() {
   return useQuery({
     queryKey: notesKeys.all,
@@ -138,14 +159,24 @@ export function useTogglePublicNoteMutation() {
 }
 
 export function useAddFavoriteMutation() {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-      mutationFn: (id: string) => {
-        const notesService = new NotesService();
-        return notesService.addFavorite(id);
-      },
-      onSuccess: () => {        queryClient.invalidateQueries({ queryKey: ["publicNotes"] });
-      }
-    })
-  }
+  return useMutation({
+    mutationFn: (id: string) => {
+      const notesService = new NotesService();
+      return notesService.addFavorite(id);
+    },
+    onSuccess: () => {        queryClient.invalidateQueries({ queryKey: ["publicNotes"] });
+    }
+  })
+}
+
+export function useMyFavoritesQuery() {
+  return useQuery({
+    queryKey: ["favoriteNotes"],
+    queryFn: () => {
+      const notesService = new NotesService();
+      return notesService.getMyFavorites();
+    }
+  })
+}

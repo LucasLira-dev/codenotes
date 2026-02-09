@@ -123,4 +123,17 @@ export class NotesService {
 
         return await res.json();
     }
+    
+    async getMyFavorites(){
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/favorites`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to fetch favorite notes");
+        }
+
+        return await res.json();
+    }
 }
