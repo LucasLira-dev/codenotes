@@ -3,19 +3,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Highlight, themes } from "prism-react-renderer"
 
-import { Note, useNotes} from "@/contexts/NotesContext"
+import { useNotes } from "@/contexts/NotesContext"
+import type { Note } from "@/hooks/notes"
 
 import { useState } from "react"
 import { Pencil, Trash } from "lucide-react"
 import { NotesModal } from "@/components/NotesComponents/NotesModal/notesModal"
 
+
+
 export const AllNotes = () => {
 
-    const { notes, updateNote, deleteNote } = useNotes()
+    const { notes, updateNote, deleteNote, togglePublic } = useNotes()
 
     const [modalOpen, setModalOpen] = useState(false)
     const [modalAction, setModalAction] = useState<"edit" | "delete">("edit")
-    const [selectedNote, setSelectedNote] = useState<Note | undefined>()
+    const [selectedNote, setSelectedNote] = useState<Note>()
 
     const handleEdit = (note: Note) => {
       setSelectedNote(note);
@@ -39,24 +42,42 @@ export const AllNotes = () => {
             >
               <CardHeader>
                 <div className="flex flex-col gap-1 min-w-0">
-                  <div className="flex justify-between items-center w-full">
-                    <CardTitle className="text-[var(--foreground)] text-[18px] leading-normal w-full md:max-w-full">
+                  <div className="flex justify-between items-center w-full gap-4">
+                    <CardTitle className="text-[var(--foreground)] text-[18px] leading-normal flex-1 min-w-0">
                       {note.title}
                     </CardTitle>
-                    <div className="flex gap-2 items-center text-[16px]">
+                    <div className="flex gap-3 items-center flex-shrink-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-400">Público</span>
+                        <button
+                          type="button"
+                          onClick={() => { togglePublic(note.id, !note.isPublic) }}
+                          role="switch"
+                          aria-checked={note.isPublic}
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                            note.isPublic ? 'bg-[var(--primary)]' : 'bg-red-900'
+                          }`} 
+                        >
+                          <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                              note.isPublic ? 'translate-x-6' : 'translate-x-1'
+                            }`}
+                          />
+                        </button>
+                      </div>
                       <button
                         type="button"
                         onClick={() => handleEdit(note)}
                         aria-label="Editar nota"
                       >
-                        <Pencil className="text-[var(--foreground)] cursor-pointer" />
+                        <Pencil className="text-[var(--foreground)] cursor-pointer w-5 h-5" />
                       </button>
                       <button
                         type="button"
                         onClick={() => handleDelete(note)}
                         aria-label="Excluir nota"
                       >
-                        <Trash className="text-[var(--foreground)] cursor-pointer" />
+                        <Trash className="text-[var(--foreground)] cursor-pointer w-5 h-5" />
                       </button>
                     </div>
                   </div>

@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogPortal, DialogOverlay, DialogContent, DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
-
-interface Note {
-  id: number;
-  title: string;
-  code: string;
-  language: string;
-}
+import type { Note } from "@/hooks/notes";
 
 interface NotesModalProps {
   open: boolean;

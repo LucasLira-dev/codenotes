@@ -13,6 +13,7 @@ import {
   useUpdateNoteMutation,
   useDeleteNoteMutation,
   type Note,
+  useTogglePublicNoteMutation,
 } from "@/hooks/notes";
 
 export type { Note };
@@ -23,6 +24,7 @@ export interface NotesContextType {
   isError: boolean;
   updateNote: (id: string, title: string, code: string) => Promise<void>;
   deleteNote: (id: string) => Promise<void>;
+  togglePublic: (id: string, isPublic: boolean) => Promise<void>;
 }
 
 const NotesContext = createContext<NotesContextType | undefined>(undefined);
@@ -40,6 +42,7 @@ export function NotesProvider({ children }: NotesProviderProps) {
   const { data: notes = [], isLoading, isError } = useNotesQuery();
   const updateMutation = useUpdateNoteMutation();
   const deleteMutation = useDeleteNoteMutation();
+  const togglePublicMutation = useTogglePublicNoteMutation();
 
   const updateNote = useCallback(
     async (id: string, title: string, code: string) => {
@@ -79,8 +82,26 @@ export function NotesProvider({ children }: NotesProviderProps) {
     [deleteMutation]
   );
 
+  const togglePublic = useCallback(
+    async (id: string, isPublic: boolean) => {
+      try {
+        await togglePublicMutation.mutateAsync({ id, isPublic });
+        setToastType("success");
+        setToastTitle("Visibilidade alterada com sucesso!");
+        setToastDesc(`Sua nota agora é ${isPublic ? "pública" : "privada"}.`);
+        setToastOpen(true);
+      } catch (error) {
+        console.error("Erro ao alterar visibilidade da nota:", error);
+        setToastType("error");
+        setToastTitle("Erro ao alterar visibilidade");
+        setToastDesc("Ocorreu um erro ao alterar a visibilidade da nota.");
+        setToastOpen(true);
+      }
+    }, [togglePublicMutation]
+  )
+
   return (
-    <NotesContext.Provider value={{ notes, isLoading, isError, updateNote, deleteNote }}>
+    <NotesContext.Provider value={{ notes, isLoading, isError, updateNote, deleteNote, togglePublic }}>
       {children}
       <CustomToast
         open={toastOpen}

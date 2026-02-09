@@ -10,6 +10,7 @@ export interface Note {
   title: string;
   code: string;
   language: string;
+  isPublic: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -87,4 +88,24 @@ export function useDeleteNoteMutation() {
       queryClient.invalidateQueries({ queryKey: notesKeys.all });
     },
   });
+}
+
+export function useTogglePublicNoteMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      isPublic
+    }: {
+      id: string;
+      isPublic: boolean;
+    }) => {
+      const notesService = new NotesService();
+      return notesService.togglePublic(id, isPublic);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: notesKeys.all });
+    }
+  })
 }

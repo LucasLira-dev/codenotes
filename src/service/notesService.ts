@@ -76,4 +76,21 @@ export class NotesService {
             credentials: "include",
         });
     }
+
+    async togglePublic(id: string, isPublic: boolean) {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/${id}/visibility`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ isPublic }),
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to toggle public status");
+        }
+
+        return await res.json();
+    }
 }
