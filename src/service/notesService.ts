@@ -93,4 +93,34 @@ export class NotesService {
 
         return await res.json();
     }
+
+    async getPublicNotes() {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/publicNotes`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to fetch public notes");
+        }
+
+        return await res.json();
+    }
+
+    async addFavorite(notedId: string) {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/favorites`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ noteId: notedId }),
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to add favorite");
+        }
+
+        return await res.json();
+    }
 }

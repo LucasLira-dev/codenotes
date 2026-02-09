@@ -7,6 +7,7 @@ import { MdOutlineExitToApp } from "react-icons/md";
 import Link from 'next/link';
 
 import { authClient } from "@/lib/auth-client";
+import { Button } from '@/components/ui/button';
 
 interface NotesMenuProps {
     onClose: () => void,
@@ -37,38 +38,39 @@ export const NotesMenu = ({ onClose, isDesktop }: NotesMenuProps) => {
                 <div
                 className="flex flex-col">
                     <div
-                    className="flex gap-3 px-3 py-2 items-center hover:bg-[var(--chart2-secondary)] rounded">
+                    className="flex gap-3 px-3 py-2  items-center hover:bg-[var(--chart2-secondary)] rounded">
                         <LuNotebookText className="text-[var(--foreground)]" />
                         <a href="/notes" className="text-[var(--foreground)]">Minhas notas</a>
                     </div>
-                    <div
-                    className='flex gap-3 px-3 py-2 items-center hover:bg-[var(--chart2-secondary)] rounded'>
+                    <Link
+                    href="/editor"
+                    aria-label='Ir para página do editor'
+                    className='flex gap-1 px-3 items-center hover:bg-[var(--chart2-secondary)] rounded cursor-pointer'>
                         <FaPlus className="text-[var(--foreground)] " />
-                        <Link 
-                        href="/editor" 
-                        className="text-[var(--foreground)]"
-                        aria-label='Ir para página do editor'>
+                        <Button
+                        className="text-[var(--foreground)] cursor-pointer"
+                        >
                             Editor
-                        </Link>
-                    </div>
+                        </Button>
+                    </Link>
                     
                 </div>
 
                 <div
                 className="flex flex-col mb-6 border-t-1 border-t-[var(--border)]">
-                    <div
-                    className='flex gap-3 px-3 py-2 items-center hover:bg-[var(--chart2-secondary)] rounded'>
+                    <Link
+                    href="/settings"
+                    aria-label='Ir para página de configurações'
+                    className='flex px-3 items-center hover:bg-[var(--chart2-secondary)] rounded cursor-pointer'>
                         <CiSettings className="text-[var(--foreground)]" />
-                        <Link 
-                        href="/settings" 
-                        className="text-[var(--foreground)]
-                        "
+                        <Button
+                        className="text-[var(--foreground)] cursor-pointer"
                         aria-label='Ir para página de configurações'>
                             Configurações
-                        </Link>
-                    </div>
+                        </Button>
+                    </Link>
                     <div
-                    className='flex gap-3 items-center px-3 py-2 hover:bg-[var(--chart2-secondary)] rounded'>
+                    className='flex gap-3 items-center px-3 py-1 hover:bg-[var(--chart2-secondary)] rounded cursor-pointer'>
                         <MdOutlineExitToApp className="text-[var(--foreground)]" />
                         <button 
                         className="text-[var(--foreground)]"

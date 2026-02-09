@@ -15,6 +15,23 @@ export interface Note {
   updatedAt: string;
 }
 
+export interface PublicNote {
+  id: string;
+  title: string;
+  code: string;
+  language: string;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+  authorId: string;
+  author: {
+    id: string;
+    name: string;
+    image: string | null;
+  };
+  isFavorited: boolean;
+}
+
 export function useNotesQuery() {
   return useQuery({
     queryKey: notesKeys.all,
@@ -23,6 +40,16 @@ export function useNotesQuery() {
       return notesService.getNotes();
     },
   });
+}
+
+export function usePublicNotesQuery() {
+  return useQuery({
+    queryKey: ["publicNotes"],
+    queryFn: () => {
+      const notesService = new NotesService();
+      return notesService.getPublicNotes();
+    }
+  })
 }
 
 export function useCreateNoteMutation() {
@@ -109,3 +136,16 @@ export function useTogglePublicNoteMutation() {
     }
   })
 }
+
+export function useAddFavoriteMutation() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+      mutationFn: (id: string) => {
+        const notesService = new NotesService();
+        return notesService.addFavorite(id);
+      },
+      onSuccess: () => {        queryClient.invalidateQueries({ queryKey: ["publicNotes"] });
+      }
+    })
+  }

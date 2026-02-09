@@ -14,17 +14,24 @@ import {
   useDeleteNoteMutation,
   type Note,
   useTogglePublicNoteMutation,
+  usePublicNotesQuery,
+  PublicNote,
+  useAddFavoriteMutation,
 } from "@/hooks/notes";
 
 export type { Note };
 
 export interface NotesContextType {
   notes: Note[];
+  publicNotes: PublicNote[];
+  isPublicLoading: boolean;
+  isPublicError: boolean; 
   isLoading: boolean;
   isError: boolean;
   updateNote: (id: string, title: string, code: string) => Promise<void>;
   deleteNote: (id: string) => Promise<void>;
   togglePublic: (id: string, isPublic: boolean) => Promise<void>;
+  addFavorite: (id: string) => Promise<void>;
 }
 
 const NotesContext = createContext<NotesContextType | undefined>(undefined);
@@ -40,9 +47,12 @@ export function NotesProvider({ children }: NotesProviderProps) {
   const [toastDesc, setToastDesc] = useState("");
 
   const { data: notes = [], isLoading, isError } = useNotesQuery();
+  const { data: publicNotes = [], isLoading: isPublicLoading, isError: isPublicError } = usePublicNotesQuery();
+  
   const updateMutation = useUpdateNoteMutation();
   const deleteMutation = useDeleteNoteMutation();
   const togglePublicMutation = useTogglePublicNoteMutation();
+  const addFavoriteMutation = useAddFavoriteMutation();
 
   const updateNote = useCallback(
     async (id: string, title: string, code: string) => {
@@ -100,9 +110,27 @@ export function NotesProvider({ children }: NotesProviderProps) {
     }, [togglePublicMutation]
   )
 
+  const addFavorite = useCallback(
+    async (id: string) => {
+      try {
+        await addFavoriteMutation.mutateAsync(id);
+        setToastType("success");
+        setToastTitle("Favorito alterado com sucesso!");
+        setToastDesc("Sua nota foi adicionada ou removida dos favoritos.");
+        setToastOpen(true);
+      } catch (error) {
+        console.error("Erro ao alterar favorito da nota:", error);
+        setToastType("error");
+        setToastTitle("Erro ao alterar favorito");
+        setToastDesc("Ocorreu um erro ao alterar o favorito da nota.");
+        setToastOpen(true);
+      }
+    }, [addFavoriteMutation]
+  )
+
   return (
-    <NotesContext.Provider value={{ notes, isLoading, isError, updateNote, deleteNote, togglePublic }}>
-      {children}
+    <NotesContext.Provider value={{ notes, isLoading, isError, updateNote, deleteNote, togglePublic, publicNotes, isPublicLoading, isPublicError, addFavorite }}>
+        {children}
       <CustomToast
         open={toastOpen}
         type={toastType}
