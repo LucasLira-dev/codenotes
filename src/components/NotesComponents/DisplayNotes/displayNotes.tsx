@@ -6,6 +6,7 @@ import { Heart } from "lucide-react"
 import { Highlight, themes } from "prism-react-renderer"
 import { useNotes } from "@/contexts/NotesContext"
 import { DisplayNotesSkeleton } from "./displayNotesSkeleton"
+import { authClient } from "@/lib/auth-client"
 
 interface DisplayNotesProps {
   notesType: "favorites" | "public";
@@ -16,6 +17,8 @@ export const DisplayNotes = ({ notesType, isLoading }: DisplayNotesProps) => {
   
   const { addFavorite, publicNotes, favoritesNotes } = useNotes();
 
+  const { data: session} = authClient.useSession();
+  const isAuthenticated = !!session?.user;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -60,20 +63,24 @@ export const DisplayNotes = ({ notesType, isLoading }: DisplayNotesProps) => {
                         </p>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => addFavorite(note.id)}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--input)] hover:bg-[var(--muted)] transition-colors flex-shrink-0"
-                      aria-label={note.isFavorited ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-                    >
-                      <Heart
-                        className={`w-4 h-4 ${
-                          note.isFavorited 
-                            ? "fill-[var(--primary)] text-[var(--primary)]" 
-                            : "text-[var(--foreground)]"
-                        }`}
-                      />
-                    </button>
+                    {
+                      isAuthenticated && (
+                        <button
+                          type="button"
+                          onClick={() => addFavorite(note.id)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--input)] hover:bg-[var(--muted)] transition-colors flex-shrink-0"
+                          aria-label={note.isFavorited ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                        >
+                          <Heart
+                            className={`w-4 h-4 ${note.isFavorited
+                                ? "fill-[var(--primary)] text-[var(--primary)]"
+                                : "text-[var(--foreground)]"
+                              }`}
+                          />
+                        </button>
+                      )
+                    }
+                    
                   </div>
 
                   <div className="flex flex-col gap-2 min-w-0">

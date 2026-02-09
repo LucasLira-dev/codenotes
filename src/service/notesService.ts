@@ -71,7 +71,7 @@ export class NotesService {
     }
 
     searchNotes(query: string) {
-        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/search/${encodeURIComponent(query)}`, {
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/search?search=${encodeURIComponent(query)}`, {
             method: "GET",
             credentials: "include",
         });

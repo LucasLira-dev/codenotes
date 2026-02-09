@@ -1,16 +1,7 @@
-'use client'
-
-import { authClient } from "@/lib/auth-client";
 import Link from "next/link"
 
 export const SiteDescription = () => {
 
-    const { data, isPending } = authClient.useSession();
-    
-    const getDestination = () => {
-        if (isPending) return "/login";
-        return data ? "/editor" : "/login";
-      };
 
     return(
         <section
@@ -30,9 +21,9 @@ export const SiteDescription = () => {
             <div
             className="flex items-center gap-4">
                 <Link
-                href={getDestination()}
+                href='/notes'
                 className="bg-[var(--primary)] text-[var(--background)] hover:brightness-90 py-1 px-3 rounded cursor-pointer">
-                    Começar agora
+                    Ver Notas Públicas
                 </Link>
                 <Link
                 href="/demo"

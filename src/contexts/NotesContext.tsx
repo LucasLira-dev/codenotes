@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { CustomToast } from "@/components/Toast/toast";
+import { authClient } from "@/lib/auth-client";
 import {
   useNotesQuery,
   useUpdateNoteMutation,
@@ -51,9 +52,12 @@ export function NotesProvider({ children }: NotesProviderProps) {
   const [toastTitle, setToastTitle] = useState("");
   const [toastDesc, setToastDesc] = useState("");
 
-  const { data: notes = [], isLoading, isError } = useNotesQuery();
+  const { data: session } = authClient.useSession();
+  const isAuthenticated = !!session?.user;
+
+  const { data: notes = [], isLoading, isError } = useNotesQuery(isAuthenticated);
   const { data: publicNotes = [], isLoading: isPublicLoading, isError: isPublicError } = usePublicNotesQuery();
-  const { data: favoritesNotes = [], isLoading: isFavoritesLoading, isError: isFavoritesError } = useMyFavoritesQuery();
+  const { data: favoritesNotes = [], isLoading: isFavoritesLoading, isError: isFavoritesError } = useMyFavoritesQuery(isAuthenticated);
   
   const updateMutation = useUpdateNoteMutation();
   const deleteMutation = useDeleteNoteMutation();

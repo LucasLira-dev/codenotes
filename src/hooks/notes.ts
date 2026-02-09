@@ -53,13 +53,14 @@ export interface FavoriteNote {
   }
 }
 
-export function useNotesQuery() {
+export function useNotesQuery(enabled: boolean = true) {
   return useQuery({
     queryKey: notesKeys.all,
     queryFn: () => {
       const notesService = new NotesService();
       return notesService.getNotes();
     },
+    enabled,
   });
 }
 
@@ -171,12 +172,13 @@ export function useAddFavoriteMutation() {
   })
 }
 
-export function useMyFavoritesQuery() {
+export function useMyFavoritesQuery(enabled: boolean = true) {
   return useQuery({
     queryKey: ["favoriteNotes"],
     queryFn: () => {
       const notesService = new NotesService();
       return notesService.getMyFavorites();
-    }
+    },
+    enabled,
   })
 }

@@ -1,8 +1,7 @@
 'use client'
 
-import { FaCode, FaPlus } from 'react-icons/fa'
+import { FaCode, FaPlus, FaGlobe, FaStar } from 'react-icons/fa'
 import { LuNotebookText } from "react-icons/lu";
-import { CiSettings } from "react-icons/ci";
 import { MdOutlineExitToApp } from "react-icons/md";
 import Link from 'next/link';
 
@@ -53,31 +52,42 @@ export const NotesMenu = ({ onClose, isDesktop }: NotesMenuProps) => {
                             Editor
                         </Button>
                     </Link>
-                    
+                    <Link
+                    href="/notes"
+                    aria-label='Ir para página de notas públicas'
+                    className='flex gap-1 px-3 items-center hover:bg-[var(--chart2-secondary)] rounded cursor-pointer'>
+                        <FaGlobe className="text-[var(--foreground)] " />
+                        <Button
+                        className="text-[var(--foreground)] cursor-pointer"
+                        >
+                            Notas Públicas
+                        </Button>
+                    </Link>
+                    <Link
+                    href="/favorites"
+                    aria-label='Ir para página de favoritos'
+                    className='flex gap-1 px-3 items-center hover:bg-[var(--chart2-secondary)] rounded cursor-pointer'>
+                        <FaStar className="text-[var(--foreground)] " />
+                        <Button
+                        className="text-[var(--foreground)] cursor-pointer"
+                        >
+                            Favoritos
+                        </Button>
+                    </Link>
                 </div>
 
                 <div
                 className="flex flex-col mb-6 border-t-1 border-t-[var(--border)]">
-                    <Link
-                    href="/settings"
-                    aria-label='Ir para página de configurações'
-                    className='flex px-3 items-center hover:bg-[var(--chart2-secondary)] rounded cursor-pointer'>
-                        <CiSettings className="text-[var(--foreground)]" />
-                        <Button
-                        className="text-[var(--foreground)] cursor-pointer"
-                        aria-label='Ir para página de configurações'>
-                            Configurações
-                        </Button>
-                    </Link>
-                    <div
-                    className='flex gap-3 items-center px-3 py-1 hover:bg-[var(--chart2-secondary)] rounded cursor-pointer'>
+                    <button
+                    onClick={() => authClient.signOut()}
+                    className='flex gap-3 items-center px-3 py-2 hover:bg-[var(--chart2-secondary)] rounded cursor-pointer'
+                    aria-label='Sair'
+                    >
                         <MdOutlineExitToApp className="text-[var(--foreground)]" />
-                        <button 
-                        className="text-[var(--foreground)]"
-                        onClick={() => authClient.signOut()}
-                        aria-label='Sair'
-                        > Sair </button>
-                    </div>
+                        <span className="text-[var(--foreground)]">
+                            Sair
+                        </span>
+                    </button>
                 </div>
 
             </nav>

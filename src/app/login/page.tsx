@@ -53,6 +53,7 @@ export default function LoginPage() {
       const { error: signInError } = await authClient.signIn.email({
         email,
         password,
+        callbackURL: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/editor`,
       });
 
       if (signInError) {

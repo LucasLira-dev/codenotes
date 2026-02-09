@@ -1,9 +1,27 @@
 'use client'
 
+import Loading from "@/components/Loading/loading"
 import { FavoritesNotes } from "@/components/NotesComponents/FavoritesNotes/favoritesNotes"
 import { NotesProvider } from "@/contexts/NotesContext"
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export default function FavoritesNotesPage() {
+
+    const { data: session, isPending } = authClient.useSession()
+      const router = useRouter()
+    
+      useEffect(() => {
+        if (!isPending && !session) {
+          router.push("/login")
+        }
+      }, [isPending, router, session])
+    
+      if (isPending) {
+        return <Loading />
+      }
+
   return (
     <NotesProvider>
       <main className="min-h-screen bg-[var(--background)] py-8 px-4">

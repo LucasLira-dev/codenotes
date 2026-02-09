@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
+
 const GITHUB_ICON = (
   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
     <path
@@ -47,7 +48,7 @@ export default function SocialLoginButtons() {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: `${process.env.FRONTEND_URL}/editor`,
+        callbackURL: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/editor`,
       });
     } catch (err) {
       setError("Erro ao conectar. Tente novamente.");
