@@ -4,11 +4,11 @@ import { useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 
 import { NotesService } from "@/service/notesService";
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import { SearchResults } from "../SearchResults/searchResults";
 
 export const SearchInformations = () => {
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
 
   const [notes, setNotes] = useState([]);
   const [searching, setSearching] = useState(false);
@@ -17,11 +17,11 @@ export const SearchInformations = () => {
   const isDisabled = searchTerm.trim() === "";
 
   const handleSearchTermChange = () => {
-    if (!session?.accessToken) return;
+    if (!session) return;
     setSearching(true);
     const notesService = new NotesService();
     notesService
-      .searchNotes(searchTerm.trim(), session.accessToken)
+      .searchNotes(searchTerm.trim())
       .then((response) => response.json())
       .then((data) => {
         setNotes(data);

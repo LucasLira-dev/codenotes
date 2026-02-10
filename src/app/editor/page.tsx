@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession } from "next-auth/react"
+import { authClient } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import {EditorHeader } from '@/components/EditorComponents/EditorHeader/editorHeader'
@@ -13,16 +13,16 @@ import { Chatbot } from "@/components/Chatbot/chatbot"
 export default function EditorPage() {
 
 
-  const { data: session, status } = useSession()
+  const { data: session, isPending } = authClient.useSession()
   const router = useRouter()
 
   useEffect(() => {
-    if (status === "unauthenticated" || !session?.accessToken) {
+    if (!isPending && !session) {
       router.push("/login")
     }
-  }, [status, router, session?.accessToken])
+  }, [isPending, router, session])
 
-  if (status === "loading") {
+  if (isPending) {
     return <Loading />
   }
 

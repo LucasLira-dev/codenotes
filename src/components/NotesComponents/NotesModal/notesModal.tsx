@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogPortal, DialogOverlay, DialogContent, DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
-
-interface Note {
-  id: number;
-  title: string;
-  code: string;
-  language: string;
-}
+import { Highlight, themes } from "prism-react-renderer";
+import type { Note } from "@/hooks/notes";
 
 interface NotesModalProps {
   open: boolean;
@@ -27,6 +22,7 @@ export const NotesModal = ({
 }: NotesModalProps) => {
   const [editTitle, setEditTitle] = useState(note?.title || "");
   const [editCode, setEditCode] = useState(note?.code || "");
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     setEditTitle(note?.title || "");
@@ -65,12 +61,57 @@ export const NotesModal = ({
                 required
               />
               <label className="text-sm font-semibold">Código</label>
-              <textarea
-                value={editCode}
-                onChange={e => setEditCode(e.target.value)}
-                className="border rounded px-3 py-2 font-mono w-full min-h-[240px] h-[320px] mb-2"
-                required
-              />
+              <div className="flex gap-2 mb-2">
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className={`px-3 py-1 rounded text-sm ${!isEditing ? 'bg-[var(--primary)] text-black' : 'bg-gray-600 text-white'}`}
+                >
+                  Visualizar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(true)}
+                  className={`px-3 py-1 rounded text-sm ${isEditing ? 'bg-[var(--primary)] text-black' : 'bg-gray-600 text-white'}`}
+                >
+                  Editar
+                </button>
+              </div>
+              {!isEditing ? (
+                <Highlight
+                  code={editCode}
+                  language={note.language}
+                  theme={themes.dracula}
+                >
+                  {({
+                    className,
+                    style,
+                    tokens,
+                    getLineProps,
+                    getTokenProps,
+                  }) => (
+                    <pre
+                      className={`rounded-md p-4 text-sm font-mono overflow-x-auto mb-2 max-h-[400px] overflow-y-auto ${className}`}
+                      style={style}
+                    >
+                      {tokens.map((line, i) => (
+                        <div key={i} {...getLineProps({ line })}>
+                          {line.map((token, key) => (
+                            <span key={key} {...getTokenProps({ token })} />
+                          ))}
+                        </div>
+                      ))}
+                    </pre>
+                  )}
+                </Highlight>
+              ) : (
+                <textarea
+                  value={editCode}
+                  onChange={e => setEditCode(e.target.value)}
+                  className="border rounded px-3 py-2 font-mono w-full min-h-[240px] h-[320px] mb-2"
+                  required
+                />
+              )}
 
               <div className="flex justify-end gap-2 mt-2">
                 <button

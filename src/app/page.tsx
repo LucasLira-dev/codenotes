@@ -6,7 +6,7 @@ import { MainFeatures } from "@/components/MainFeatures/mainFeatures"
 import { Footer } from "@/components/Footer/footer"
 import Loading from "@/components/Loading/loading"
 
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 
 import Link from "next/link";
 import { Chatbot } from "@/components/Chatbot/chatbot";
@@ -14,9 +14,9 @@ import { Chatbot } from "@/components/Chatbot/chatbot";
 
 export default function Home() {
 
-  const { data, status } = useSession();
+  const { data, isPending } = authClient.useSession();
 
-  if(status === 'loading') {
+  if(isPending) {
     return <Loading />  
   }
 

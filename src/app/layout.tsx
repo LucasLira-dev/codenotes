@@ -46,12 +46,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
         className={`${geist.variable} ${manrope.variable} antialiased`}
+        suppressHydrationWarning
       >
         <SessionWrapper>
           {children}

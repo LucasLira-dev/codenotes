@@ -1,103 +1,146 @@
-import { createContext, useState, ReactNode, useContext, useEffect, useCallback } from 'react';
-import { useSession } from 'next-auth/react'
-import { NotesService } from '@/service/notesService'
-import { CustomToast } from '@/components/Toast/toast';
+"use client";
 
-// Define a Note interface to specify the shape of a note object
-export interface Note {
-  id: number;
-  title: string;
-  code: string;
-  language: string;
-  createdAt: string;
-  updatedAt: string;
-  // Add other fields as needed
-}
+import {
+  createContext,
+  useCallback,
+  ReactNode,
+  useContext,
+  useState,
+} from "react";
+import { CustomToast } from "@/components/Toast/toast";
+import { authClient } from "@/lib/auth-client";
+import {
+  useNotesQuery,
+  useUpdateNoteMutation,
+  useDeleteNoteMutation,
+  type Note,
+  useTogglePublicNoteMutation,
+  usePublicNotesQuery,
+  PublicNote,
+  useAddFavoriteMutation,
+  useMyFavoritesQuery,
+  FavoriteNote,
+} from "@/hooks/notes";
 
-// Define the NotesContextType interface according to your context's value shape
+export type { Note };
+
 export interface NotesContextType {
   notes: Note[];
-  setNotes: (notes: Note[]) => void;
-  updateNote: (id: number, title: string, code: string) => Promise<void>;
-  deleteNote: (id: number) => Promise<void>;
+  publicNotes: PublicNote[];
+  favoritesNotes: FavoriteNote[];
+  isFavoritesLoading: boolean;
+  isFavoritesError: boolean;
+  isPublicLoading: boolean;
+  isPublicError: boolean; 
+  isLoading: boolean;
+  isError: boolean;
+  updateNote: (id: string, title: string, code: string) => Promise<void>;
+  deleteNote: (id: string) => Promise<void>;
+  togglePublic: (id: string, isPublic: boolean) => Promise<void>;
+  addFavorite: (id: string) => Promise<void>;
 }
 
 const NotesContext = createContext<NotesContextType | undefined>(undefined);
 
-interface NotesContextProps {
-    children: ReactNode;
+interface NotesProviderProps {
+  children: ReactNode;
 }
 
-
-export const NotesProvider = ({ children }: NotesContextProps) => {
-  const [notes, setNotes] = useState<Note[]>([]);
+export function NotesProvider({ children }: NotesProviderProps) {
   const [toastOpen, setToastOpen] = useState(false);
   const [toastType, setToastType] = useState<"success" | "error">("success");
   const [toastTitle, setToastTitle] = useState("");
   const [toastDesc, setToastDesc] = useState("");
 
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
+  const isAuthenticated = !!session?.user;
 
-  useEffect(() => {
-    if (session?.accessToken) {
-      const notesService = new NotesService();
-      notesService.getNotes(session.accessToken).then(fetchedNotes => {
-        setNotes(fetchedNotes);
-      }).catch(error => {
-        console.error("Erro ao buscar notas:", error);
-      });
-    }
-  }, [session?.accessToken]);
+  const { data: notes = [], isLoading, isError } = useNotesQuery(isAuthenticated);
+  const { data: publicNotes = [], isLoading: isPublicLoading, isError: isPublicError } = usePublicNotesQuery();
+  const { data: favoritesNotes = [], isLoading: isFavoritesLoading, isError: isFavoritesError } = useMyFavoritesQuery(isAuthenticated);
+  
+  const updateMutation = useUpdateNoteMutation();
+  const deleteMutation = useDeleteNoteMutation();
+  const togglePublicMutation = useTogglePublicNoteMutation();
+  const addFavoriteMutation = useAddFavoriteMutation();
 
-  // Função para editar nota
-  const updateNote = useCallback(async (id: number, title: string, code: string) => {
-    if (!session?.accessToken) return;
-    const notesService = new NotesService();
-    try {
-      const updated = await notesService.editNote(id, { title, code, token: session.accessToken });
-      setNotes((prev) =>
-        prev.map((note) =>
-          note.id === id
-            ? { ...note, ...updated, language: updated.language ?? note.language }
-            : note
-        )
-      );
-      setToastType("success");
-      setToastTitle("Nota editada com sucesso!");
-      setToastDesc("Sua nota foi atualizada.");
-      setToastOpen(true);
-    } catch (error) {
-      console.error("Erro ao editar nota:", error);
-      setToastType("error");
-      setToastTitle("Erro ao editar nota");
-      setToastDesc("Ocorreu um erro ao editar sua nota.");
-      setToastOpen(true);
-    }
-  }, [session?.accessToken, setNotes]);
+  const updateNote = useCallback(
+    async (id: string, title: string, code: string) => {
+      try {
+        await updateMutation.mutateAsync({ id, title, code });
+        setToastType("success");
+        setToastTitle("Nota editada com sucesso!");
+        setToastDesc("Sua nota foi atualizada.");
+        setToastOpen(true);
+      } catch (error) {
+        console.error("Erro ao editar nota:", error);
+        setToastType("error");
+        setToastTitle("Erro ao editar nota");
+        setToastDesc("Ocorreu um erro ao editar sua nota.");
+        setToastOpen(true);
+      }
+    },
+    [updateMutation]
+  );
 
-  // Função para deletar nota
-  const deleteNote = useCallback(async (id: number) => {
-    if (!session?.accessToken) return;
-    const notesService = new NotesService();
-    try {
-      await notesService.deleteNote(id, session.accessToken);
-      setNotes(prev => prev.filter(note => note.id !== id));
-      setToastType("success");
-      setToastTitle("Nota deletada com sucesso!");
-      setToastDesc("Sua nota foi removida.");
-      setToastOpen(true);
-    } catch (error) {
-      console.error("Erro ao deletar nota:", error);
-      setToastType("error");
-      setToastTitle("Erro ao deletar nota");
-      setToastDesc("Ocorreu um erro ao deletar sua nota.");
-      setToastOpen(true);
-    }
-  }, [session?.accessToken, setNotes]);
+  const deleteNote = useCallback(
+    async (id: string) => {
+      try {
+        await deleteMutation.mutateAsync(id);
+        setToastType("success");
+        setToastTitle("Nota deletada com sucesso!");
+        setToastDesc("Sua nota foi removida.");
+        setToastOpen(true);
+      } catch (error) {
+        console.error("Erro ao deletar nota:", error);
+        setToastType("error");
+        setToastTitle("Erro ao deletar nota");
+        setToastDesc("Ocorreu um erro ao deletar sua nota.");
+        setToastOpen(true);
+      }
+    },
+    [deleteMutation]
+  );
+
+  const togglePublic = useCallback(
+    async (id: string, isPublic: boolean) => {
+      try {
+        await togglePublicMutation.mutateAsync({ id, isPublic });
+        setToastType("success");
+        setToastTitle("Visibilidade alterada com sucesso!");
+        setToastDesc(`Sua nota agora é ${isPublic ? "pública" : "privada"}.`);
+        setToastOpen(true);
+      } catch (error) {
+        console.error("Erro ao alterar visibilidade da nota:", error);
+        setToastType("error");
+        setToastTitle("Erro ao alterar visibilidade");
+        setToastDesc("Ocorreu um erro ao alterar a visibilidade da nota.");
+        setToastOpen(true);
+      }
+    }, [togglePublicMutation]
+  )
+
+  const addFavorite = useCallback(
+    async (id: string) => {
+      try {
+        await addFavoriteMutation.mutateAsync(id);
+        setToastType("success");
+        setToastTitle("Favorito alterado com sucesso!");
+        setToastDesc("Sua nota foi adicionada ou removida dos favoritos.");
+        setToastOpen(true);
+      } catch (error) {
+        console.error("Erro ao alterar favorito da nota:", error);
+        setToastType("error");
+        setToastTitle("Erro ao alterar favorito");
+        setToastDesc("Ocorreu um erro ao alterar o favorito da nota.");
+        setToastOpen(true);
+      }
+    }, [addFavoriteMutation]
+  )
 
   return (
-    <NotesContext.Provider value={{ notes, setNotes, updateNote, deleteNote }}>
-      {children}
+    <NotesContext.Provider value={{ notes, isLoading, isError, updateNote, deleteNote, togglePublic, publicNotes, isPublicLoading, isPublicError, addFavorite, favoritesNotes, isFavoritesLoading, isFavoritesError }}>
+        {children}
       <CustomToast
         open={toastOpen}
         type={toastType}
@@ -107,12 +150,12 @@ export const NotesProvider = ({ children }: NotesContextProps) => {
       />
     </NotesContext.Provider>
   );
-};
+}
 
-export const useNotes = () => {
-    const context = useContext(NotesContext);
-    if (!context) {
-        throw new Error("useNotes must be used within a NotesProvider");
-    }
-    return context;
-};
+export function useNotes() {
+  const context = useContext(NotesContext);
+  if (!context) {
+    throw new Error("useNotes must be used within a NotesProvider");
+  }
+  return context;
+}

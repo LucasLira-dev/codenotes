@@ -1,19 +1,7 @@
-'use client'
-
-import { useSession } from "next-auth/react";
 import Link from "next/link"
 
 export const SiteDescription = () => {
 
-    const { data, status } = useSession();
-    
-    // Função para determinar o destino do botão
-    const getDestination = () => {
-        if (status === "loading") return "/login"; // Enquanto carrega
-        if (status === "unauthenticated") return "/login"; // Não logado
-        if (data?.accessToken) return "/editor"; // Logado com token válido
-        return "/login"; // Logado mas sem token (expirado)
-      };
 
     return(
         <section
@@ -33,9 +21,9 @@ export const SiteDescription = () => {
             <div
             className="flex items-center gap-4">
                 <Link
-                href={getDestination()}
+                href='/notes'
                 className="bg-[var(--primary)] text-[var(--background)] hover:brightness-90 py-1 px-3 rounded cursor-pointer">
-                    Começar agora
+                    Ver Notas Públicas
                 </Link>
                 <Link
                 href="/demo"

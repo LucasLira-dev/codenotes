@@ -6,13 +6,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Code2, ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import CadastrarUsuario from "./action"
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from "react"
 
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import { useSession } from "next-auth/react"
+import { authClient } from "@/lib/auth-client"
 import Loading from "@/components/Loading/loading"
+import SocialLoginButtons from "@/components/AuthComponents/SocialLoginButtons/socialLoginButtons"
 
 
 export default function RegisterPage() {
@@ -27,15 +27,15 @@ export default function RegisterPage() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const strongPasswordRegex = /^(?=(?:.*[A-Za-z]){5,})(?=.*[^A-Za-z0-9]).+$/;
 
-  const { data: session, status } = useSession();
+  const { data: session, isPending } = authClient.useSession();
   
     useEffect(() => {
-      if (status === "authenticated" && session?.accessToken) {
+      if (!isPending && session) {
         router.push("/");
       }
-    }, [status, router, session?.accessToken]);
+    }, [isPending, router, session]);
   
-    if (status === "loading") {
+    if (isPending) {
       return <Loading />;
     }
 
@@ -67,6 +67,20 @@ export default function RegisterPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {error && <p className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">{error}</p>}
+
+            <SocialLoginButtons />
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-[var(--border)]" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-[var(--card)] px-2 text-[var(--muted-foreground)]">
+                  ou crie com email
+                </span>
+              </div>
+            </div>
+
             <form 
             className="space-y-4"
             onSubmit={
@@ -98,14 +112,15 @@ export default function RegisterPage() {
                     }
 
                     try {
-                      const result = await CadastrarUsuario({
-                        userEmail: email,
-                        userPassword: password,
+                      const { error: signUpError } = await authClient.signUp.email({
+                        email,
+                        password,
+                        name: email.split("@")[0],
                       });
-                      if (result) {
-                        router.push('/editor');
+                      if (signUpError) {
+                        setError(signUpError.message || "Erro ao registrar. Tente novamente.");
                       } else {
-                        setError("Erro ao registrar. Tente novamente.");
+                        router.push('/editor');
                       }
                     } catch (err) {
                       setError("Erro ao registrar. Tente novamente.");
