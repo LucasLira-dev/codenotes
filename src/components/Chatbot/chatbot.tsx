@@ -57,12 +57,13 @@ export const Chatbot = () => {
       }).catch((error) => {
         console.error("Error getting AI response:", error);
         // setIsLoading(false);
-        setAIMessage("Desculpe, ocorreu um erro ao obter a resposta.");
+        const errorMessage = error.message || "Desculpe, ocorreu um erro ao obter a resposta.";
+        setAIMessage(errorMessage);
         setMessages((prevMessages) => [
           ...prevMessages,
           {
             role: "bot",
-            content: "Desculpe, ocorreu um erro ao obter a resposta.",
+            content: errorMessage,
           },
         ]);
       });

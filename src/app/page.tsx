@@ -28,12 +28,12 @@ export default function Home() {
         <SiteDescription />
         <MainFeatures />
         <section className="container mx-auto px-4 py-16">
-          <article className="bg-[var(--primary)] text-[var(--primary-foreground)] rounded-lg">
+          <article className="bg-[var(--primary)]/80 text-[var(--primary-foreground)] rounded-lg">
             <div className="p-8 text-center">
               <h3 className="text-3xl font-bold text-[#0F172A] mb-4">Pronto para organizar seus estudos?</h3>
               <p className="text-lg text-[#382F23] mb-6 opacity-90">Comece a usar o CodeNotes agora mesmo</p>
               <Link
-                className="bg-[var(--secondary)] text-[var(--background)] rounded-md px-4 py-1 hover:brightness-90 "
+                className="bg-[var(--background)] border-1 border-[var(--primary)] text-[var(--primary)] hover:brightness-90 py-1 px-3 rounded-lg cursor-pointer"
                 href={data ? "/editor" : "/login"}>
                 Começar a usar
               </Link>
