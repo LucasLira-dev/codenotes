@@ -4,7 +4,7 @@ import { Chatbot } from "@/components/Chatbot/chatbot";
 import Loading from "@/components/Loading/loading";
 import { SearchInformations } from "@/components/SearchComponents/SearchInformations/searchInformations";
 import { ArrowLeft } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -12,20 +12,20 @@ import { FaCode } from "react-icons/fa";
 
 export default function Search() {
 
-    const { data: session, status } = useSession();
+    const { data: session, isPending } = authClient.useSession();
     const router = useRouter();
 
     useEffect(() => {
-      if (status === "unauthenticated") {
+      if (!isPending && !session) {
         router.push("/login");
       }
-    }, [status, router, session?.accessToken]);
+    }, [isPending, router, session]);
 
-    if (status === "loading") {
+    if (isPending) {
       return <Loading />;
     }
 
-    if (status === "unauthenticated" || !session?.accessToken) {
+    if (!session) {
       router.push("/login");
     }
 

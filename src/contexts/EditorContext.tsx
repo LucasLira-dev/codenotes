@@ -1,6 +1,6 @@
 import { createContext, useState, ReactNode, useContext, useCallback } from 'react';
-import { useSession } from 'next-auth/react'
-import { NotesService } from '@/service/notesService'
+import { authClient } from '@/lib/auth-client'
+import { useCreateNoteMutation } from '@/hooks/notes'
 import { CustomToast } from '@/components/Toast/toast';
 
 interface EditorContextType {
@@ -32,10 +32,11 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
     const [toastDesc, setToastDesc] = useState("");
     
 
-    const { data: session } = useSession();
+    const { data: session } = authClient.useSession();
+    const createNoteMutation = useCreateNoteMutation();
 
     const saveNote = useCallback(async () => {
-        if (!session?.accessToken) {
+        if (!session) {
             console.error("Usuário não autenticado");
             return;
         }
@@ -50,12 +51,10 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
 
         setSaving(true);
         try {
-            const notesService = new NotesService();
-            await notesService.createNote({
+            await createNoteMutation.mutateAsync({
                 title: title.trim(),
-                code: code,
+                code,
                 language,
-                token: session.accessToken
             });
             setToastOpen(true)
             setToastType("success")
@@ -70,7 +69,7 @@ export const EditorProvider = ({ children }: EditorProviderProps) => {
         } finally {
             setSaving(false);
         }
-    }, [title, code, language, session?.accessToken]);
+    }, [title, code, language, session, createNoteMutation]);
 
     return (
         <EditorContext.Provider value={{ title, setTitle, code, setCode, language, setLanguage, saveNote, saving }}>

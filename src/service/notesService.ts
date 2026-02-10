@@ -2,30 +2,28 @@ interface CreateNoteData {
     title: string;
     code: string;
     language: string;
-    token: string;
 }
 
 interface UpdateNoteData {
     title: string;
     code: string;
     language: string;
-    token: string;
 }
 
 export class NotesService {
 
     async createNote(data: CreateNoteData) {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/note`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${data.token}`
             },
             body: JSON.stringify({
                 title: data.title,
                 code: data.code,
                 language: data.language
-            })
+            }),
+            credentials: "include",
         });
 
         if (!res.ok) {
@@ -35,12 +33,10 @@ export class NotesService {
         return await res.json();
     }
 
-    async getNotes(token: string) {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/my-notes`, {
+    async getNotes() {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
             method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+            credentials: "include",
         });
 
         if (!res.ok) {
@@ -50,15 +46,14 @@ export class NotesService {
         return await res.json();
     }
 
-    async editNote(id: number, data: Partial<UpdateNoteData>) {
-        const {token, ...fields} = data
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/${id}`, {
+    async editNote(id: string, data: Partial<UpdateNoteData>) {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify(fields)
+            body: JSON.stringify(data),
+            credentials: "include",
         });
 
         if (!res.ok) {
@@ -68,21 +63,77 @@ export class NotesService {
         return await res.json();
     }
 
-    deleteNote(id: number, token: string) {
-        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/${id}`, {
+    deleteNote(id: string) {
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/${id}`, {
             method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+            credentials: "include",
         });
     }
 
-    searchNotes(query: string, token: string) {
-        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/note/search/${encodeURIComponent(query)}`, {
+    searchNotes(query: string) {
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/search?search=${encodeURIComponent(query)}`, {
             method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+            credentials: "include",
         });
+    }
+
+    async togglePublic(id: string, isPublic: boolean) {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/${id}/visibility`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ isPublic }),
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to toggle public status");
+        }
+
+        return await res.json();
+    }
+
+    async getPublicNotes() {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/publicNotes`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to fetch public notes");
+        }
+
+        return await res.json();
+    }
+
+    async addFavorite(notedId: string) {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/favorites`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ noteId: notedId }),
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to add favorite");
+        }
+
+        return await res.json();
+    }
+    
+    async getMyFavorites(){
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/favorites`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to fetch favorite notes");
+        }
+
+        return await res.json();
     }
 }

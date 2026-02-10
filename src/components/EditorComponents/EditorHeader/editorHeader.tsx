@@ -41,11 +41,11 @@ export const EditorHeader = () => {
             <div
             className="flex gap-4">
                 <Link
-                href="/notes"
+                href="/dashboard"
                 className="bg-[var(--background)] border-1 border-[var(--border)] text-[var(--foreground)] hover:brightness-90 py-1 px-3 rounded cursor-pointer flex items-center gap-1"
                 >
                     <LuNotebookText className="h-4 w-4" />
-                    Ver Notas
+                    Dashboard
                 </Link>
                 <button
                 className="bg-[var(--primary)] text-[var(--background)] hover:brightness-90 py-1 px-3 rounded cursor-pointer flex items-center gap-1"
